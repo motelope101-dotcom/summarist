@@ -1,6 +1,6 @@
 "use client";
 
-import { auth, db } from "../lib/firebaseConfig";
+import { db, auth } from "@/lib/firebaseConfig";
 
 export default function HomePage() {
   console.log("Firebase Auth instance:", auth);
