@@ -1,21 +1,23 @@
 // src/components/Layout.tsx
+"use client";
+
+import Header from "./Header";
 import React from "react";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+type LayoutProps = {
+  children: React.ReactNode;
+};
+
+export default function Layout({ children }: LayoutProps) {
   return (
-    <div className="bg-gray-50 text-gray-900 font-sans min-h-screen">
-      {/* header */}
-      <header className="w-full p-4 bg-blue-600 text-white">
-        <h1 className="text-2xl font-bold">Summarist</h1>
-      </header>
+    <div className="min-h-screen flex flex-col bg-neutral-950 text-neutral-100">
+      {/* Top header */}
+      <Header />
 
-      {/* Main content */}
-      <main className="p-8">{children}</main>
-
-      {/* footer */}
-      <footer className="w-full p-4 bg-gray-200 text-center">
-        <p className="text-sm text-gray-600">© 2025 Summarist</p>
-      </footer>
+      {/* Main content area */}
+      <main className="flex-1 p-6">
+        {children}
+      </main>
     </div>
   );
 }
