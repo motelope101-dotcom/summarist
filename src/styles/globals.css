@@ -2,9 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-/* --- Optional global reset --- */
+/* Global reset */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+/* Body defaults */
+html, body {
+  height: 100%;
+  background-color: #816678; /* cinematic dark background */
+  color: #ffffff;            /* default text color */
+  font-family: theme('fontFamily.sans'); /* Tailwind’s default sans stack */
+}
+
+/* Scoped fix: force Sidebar icons to stay compact */
+aside svg {
+  height: 0.875rem; /* 14px */
+  width: 0.875rem;
 }

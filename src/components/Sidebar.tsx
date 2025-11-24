@@ -1,55 +1,65 @@
-// src/components/Sidebar.tsx
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/cn"; // helper for conditional classNames
+import { cn } from "@/lib/cn";
+import {
+  HomeIcon,
+  SparklesIcon,
+  BookOpenIcon,
+  PlayCircleIcon,
+  ShoppingCartIcon,
+  Cog6ToothIcon,
+  RectangleStackIcon,
+} from "@heroicons/react/24/outline";
 
 const navItems = [
-  { href: "/", label: "Home" },
-  { href: "/for-you", label: "For You" },
-  { href: "/library", label: "Library" },
-  { href: "/book", label: "Book" },
-  { href: "/player", label: "Player" },
-  { href: "/sales", label: "Sales" },
-  { href: "/settings", label: "Settings" },
+  { name: "Home", href: "/", icon: HomeIcon },
+  { name: "For You", href: "/for-you", icon: SparklesIcon },
+  { name: "Library", href: "/library", icon: RectangleStackIcon },
+  { name: "Book", href: "/book", icon: BookOpenIcon },
+  { name: "Player", href: "/player", icon: PlayCircleIcon },
+  { name: "Sales", href: "/sales", icon: ShoppingCartIcon },
+  { name: "Settings", href: "/settings", icon: Cog6ToothIcon },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-full flex-col border-r border-neutral-800 bg-neutral-900 p-4">
-      {/* Logo / Title */}
-      <div className="mb-6 px-2">
-        <span className="text-xl font-semibold tracking-wide text-white">
-          Summarist
-        </span>
-      </div>
+    <aside className="w-64 bg-neutral-900 border-r border-neutral-800 flex flex-col">
+      {/* Logo */}
+      <div className="p-6 text-2xl font-bold text-blue-500">Summarist</div>
 
-      {/* Navigation links */}
-      <nav className="flex-1 space-y-1">
+      {/* Navigation */}
+      <nav className="flex-1 px-4 space-y-2">
         {navItems.map((item) => {
-          const active = pathname === item.href;
+          const Icon = item.icon;
+          const isActive =
+            pathname === item.href ||
+            (pathname.startsWith("/book") && item.href === "/book");
+
           return (
             <Link
-              key={item.href}
+              key={item.name}
               href={item.href}
               className={cn(
-                "block rounded px-3 py-2 text-sm transition-colors",
-                active
+                "flex items-center gap-3 px-3 py-2 rounded-md transition",
+                isActive
                   ? "bg-neutral-800 text-white"
-                  : "text-neutral-300 hover:bg-neutral-800/60 hover:text-white"
+                  : "text-neutral-400 hover:bg-neutral-800 hover:text-white"
               )}
             >
-              {item.label}
+              {/* 👇 Compact icon size + lighter stroke */}
+              <Icon className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={1} />
+              <span className="text-sm font-medium">{item.name}</span>
             </Link>
           );
         })}
       </nav>
 
-      {/* Footer note */}
-      <div className="mt-6 px-2 text-xs text-neutral-400">
+      {/* Footer */}
+      <div className="p-4 text-xs text-neutral-500">
         cinematic ui • premium feel
       </div>
     </aside>
