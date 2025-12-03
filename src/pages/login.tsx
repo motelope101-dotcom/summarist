@@ -2,18 +2,20 @@
 import React, { useState } from "react";
 import { auth } from "@/lib/firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { useRouter } from "next/router";
 
 export default function LoginPage() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      console.log("Logged in successfully");
       setError("");
+      router.push("/library"); // ✅ redirect after success
     } catch (err) {
       const msg =
         err instanceof Error ? err.message : "Failed to log in. Please try again.";

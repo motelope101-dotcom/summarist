@@ -3,12 +3,14 @@ import React, { useState } from "react";
 import { auth } from "@/lib/firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import type { FirebaseError } from "firebase/app";
+import { useRouter } from "next/router";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
+  const router = useRouter();
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -17,6 +19,7 @@ export default function SignUpPage() {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       setSuccess("Account created successfully!");
+      router.push("/library"); // redirect after success
     } catch (err) {
       const message =
         (err as FirebaseError)?.message ??
