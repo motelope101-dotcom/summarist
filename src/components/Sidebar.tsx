@@ -1,66 +1,64 @@
-"use client";
-
+// src/components/Sidebar.tsx
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/cn";
+import { auth } from "@/lib/firebaseConfig";
+import { signOut } from "firebase/auth";
 import {
   HomeIcon,
-  SparklesIcon,
   BookOpenIcon,
-  PlayCircleIcon,
+  CogIcon,
   ShoppingCartIcon,
-  Cog6ToothIcon,
-  RectangleStackIcon,
+  PlayIcon,
+  RectangleStackIcon, // used for Library
 } from "@heroicons/react/24/outline";
 
-const navItems = [
-  { name: "Home", href: "/", icon: HomeIcon },
-  { name: "For You", href: "/for-you", icon: SparklesIcon },
-  { name: "Library", href: "/library", icon: RectangleStackIcon },
-  { name: "Book", href: "/book/atomic-habits", icon: BookOpenIcon }, // ✅ direct to a valid slug
-  { name: "Player", href: "/player/sample", icon: PlayCircleIcon },   // ✅ placeholder dynamic route
-  { name: "Sales", href: "/sales", icon: ShoppingCartIcon },
-  { name: "Settings", href: "/settings", icon: Cog6ToothIcon },
-];
-
 export default function Sidebar() {
-  const pathname = usePathname();
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        console.log("User signed out");
+      })
+      .catch((error) => {
+        console.error("Error signing out:", error);
+      });
+  };
 
   return (
-    <aside className="w-64 bg-neutral-900 border-r border-neutral-800 flex flex-col">
-      {/* Logo */}
-      <div className="p-6 text-2xl font-bold text-blue-500">Summarist</div>
-
+    <aside className="flex flex-col w-20 bg-purple-900 text-white min-h-screen">
       {/* Navigation */}
-      <nav className="flex-1 px-4 space-y-2">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive =
-            pathname === item.href ||
-            (pathname.startsWith("/book") && item.href.includes("/book")) ||
-            (pathname.startsWith("/player") && item.href.includes("/player"));
+      <nav className="flex flex-col items-center gap-6 mt-6">
+        <Link href="/" className="hover:text-purple-300">
+          <HomeIcon className="h-6 w-6" />
+        </Link>
 
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-md transition",
-                isActive
-                  ? "bg-neutral-800 text-white"
-                  : "text-neutral-400 hover:bg-neutral-800 hover:text-white"
-              )}
-            >
-              <Icon className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={1} />
-              <span className="text-sm font-medium">{item.name}</span>
-            </Link>
-          );
-        })}
+        <Link href="/library" className="hover:text-purple-300">
+          <RectangleStackIcon className="h-6 w-6" />
+        </Link>
+
+        <Link href="/book/atomic-habits" className="hover:text-purple-300">
+          <BookOpenIcon className="h-6 w-6" />
+        </Link>
+
+        <Link href="/player/atomic-habits" className="hover:text-purple-300">
+          <PlayIcon className="h-6 w-6" />
+        </Link>
+
+        <Link href="/sales" className="hover:text-purple-300">
+          <ShoppingCartIcon className="h-6 w-6" />
+        </Link>
+
+        <Link href="/settings" className="hover:text-purple-300">
+          <CogIcon className="h-6 w-6" />
+        </Link>
       </nav>
 
-      {/* Footer */}
-      <div className="p-4 text-xs text-neutral-500">
-        cinematic ui • premium feel
+      {/* Logout button at bottom */}
+      <div className="mt-auto mb-6 flex justify-center">
+        <button
+          onClick={handleLogout}
+          className="bg-neutral-700 hover:bg-neutral-600 text-white p-2 rounded"
+        >
+          Log Out
+        </button>
       </div>
     </aside>
   );
