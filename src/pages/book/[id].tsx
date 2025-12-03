@@ -6,8 +6,11 @@ export default function BookDetailPage() {
   const router = useRouter();
   const { id } = router.query;
 
-  // Dummy book data (later replace with Firebase or repo)
-  const books: Record<string, { title: string; author: string; description: string }> = {
+  // Dummy book data (replace with Firestore later)
+  const books: Record<
+    string,
+    { title: string; author: string; description: string }
+  > = {
     "atomic-habits": {
       title: "Atomic Habits",
       author: "James Clear",
@@ -31,7 +34,9 @@ export default function BookDetailPage() {
     return (
       <section className="flex min-h-[60vh] flex-col items-center justify-center">
         <h1 className="text-2xl font-bold text-white">Book Not Found</h1>
-        <p className="mt-2 text-neutral-400">No details available for this book.</p>
+        <p className="mt-2 text-neutral-400">
+          No details available for this book.
+        </p>
       </section>
     );
   }
@@ -40,7 +45,9 @@ export default function BookDetailPage() {
     <section className="p-8 flex flex-col items-center">
       <h1 className="text-3xl font-bold text-white">{book.title}</h1>
       <p className="mt-2 text-neutral-400">by {book.author}</p>
-      <p className="mt-4 text-neutral-300 max-w-xl text-center">{book.description}</p>
+      <p className="mt-4 text-neutral-300 max-w-xl text-center">
+        {book.description}
+      </p>
     </section>
   );
 }

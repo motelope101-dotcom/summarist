@@ -17,8 +17,8 @@ const navItems = [
   { name: "Home", href: "/", icon: HomeIcon },
   { name: "For You", href: "/for-you", icon: SparklesIcon },
   { name: "Library", href: "/library", icon: RectangleStackIcon },
-  { name: "Book", href: "/book", icon: BookOpenIcon },
-  { name: "Player", href: "/player", icon: PlayCircleIcon },
+  { name: "Book", href: "/book/atomic-habits", icon: BookOpenIcon }, // ✅ direct to a valid slug
+  { name: "Player", href: "/player/sample", icon: PlayCircleIcon },   // ✅ placeholder dynamic route
   { name: "Sales", href: "/sales", icon: ShoppingCartIcon },
   { name: "Settings", href: "/settings", icon: Cog6ToothIcon },
 ];
@@ -37,7 +37,8 @@ export default function Sidebar() {
           const Icon = item.icon;
           const isActive =
             pathname === item.href ||
-            (pathname.startsWith("/book") && item.href === "/book");
+            (pathname.startsWith("/book") && item.href.includes("/book")) ||
+            (pathname.startsWith("/player") && item.href.includes("/player"));
 
           return (
             <Link
@@ -50,7 +51,6 @@ export default function Sidebar() {
                   : "text-neutral-400 hover:bg-neutral-800 hover:text-white"
               )}
             >
-              {/* 👇 Compact icon size + lighter stroke */}
               <Icon className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={1} />
               <span className="text-sm font-medium">{item.name}</span>
             </Link>
