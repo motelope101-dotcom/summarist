@@ -3,56 +3,58 @@
 
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { auth } from "@/contexts/firebaseConfig";
-import { signOut } from "firebase/auth";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   HomeIcon,
   BookOpenIcon,
   MusicalNoteIcon,
   Cog6ToothIcon,
   ShoppingCartIcon,
-  PowerIcon, // cleaner logout icon
+  PowerIcon,
 } from "@heroicons/react/24/outline";
 
 export default function Sidebar() {
   const router = useRouter();
+  const { user, logout } = useAuth();
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
-      router.push("/login");
+      await logout();
+      router.push("/auth/login");
     } catch (err) {
       console.error("Error logging out:", err);
     }
   };
 
   return (
-    <aside className="w-20 bg-purple-950 text-white flex flex-col items-center py-6 space-y-6">
+    <aside className="w-20 md:w-64 bg-[#816678] text-white flex flex-col items-center py-6 space-y-6 border-r border-neutral-700">
       {/* Navigation */}
       <Link href="/home" aria-label="Home">
-        <HomeIcon className="h-6 w-6 hover:text-purple-400 transition" />
+        <HomeIcon className="hover:text-purple-400 transition" />
       </Link>
       <Link href="/library" aria-label="Library">
-        <BookOpenIcon className="h-6 w-6 hover:text-purple-400 transition" />
+        <BookOpenIcon className="hover:text-purple-400 transition" />
       </Link>
       <Link href="/player/atomic-habits" aria-label="Player">
-        <MusicalNoteIcon className="h-6 w-6 hover:text-purple-400 transition" />
+        <MusicalNoteIcon className="hover:text-purple-400 transition" />
       </Link>
       <Link href="/settings" aria-label="Settings">
-        <Cog6ToothIcon className="h-6 w-6 hover:text-purple-400 transition" />
+        <Cog6ToothIcon className="hover:text-purple-400 transition" />
       </Link>
       <Link href="/sales" aria-label="Sales">
-        <ShoppingCartIcon className="h-6 w-6 hover:text-purple-400 transition" />
+        <ShoppingCartIcon className="hover:text-purple-400 transition" />
       </Link>
 
       {/* Logout */}
-      <button
-        onClick={handleLogout}
-        aria-label="Logout"
-        className="mt-auto hover:text-red-400 transition"
-      >
-        <PowerIcon className="h-6 w-6" /> {/* logout icon */}
-      </button>
+      {user && (
+        <button
+          onClick={handleLogout}
+          aria-label="Logout"
+          className="mt-auto hover:text-red-400 transition"
+        >
+          <PowerIcon />
+        </button>
+      )}
     </aside>
   );
 }

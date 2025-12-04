@@ -1,28 +1,25 @@
-// contexts/AuthContext.tsx
-
+// src/contexts/AuthContext.tsx
 import { createContext, useContext, useEffect, useState } from "react";
-import { 
-  onAuthStateChanged, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  signOut, 
-  User // <-- Firebase User type
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  User,
 } from "firebase/auth";
 import { auth } from "@/contexts/firebaseConfig";
 
-
 // Define the shape of our context
-interface AuthContextType {
-  user: User | null; 
+export interface AuthContextType {
+  user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
-
-// Create the context
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+// Create and export the context
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Provider component
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {

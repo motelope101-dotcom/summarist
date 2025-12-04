@@ -1,51 +1,74 @@
 // src/pages/auth/login.tsx
-import React, { useState } from "react";
-import { auth } from "@/contexts/firebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
   const router = useRouter();
+  const { user, login } = useAuth();
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      router.replace("/library");
+    }
+  }, [user, router]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
+    setSubmitting(true);
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      setError("");
-      router.push("/library"); // ✅ redirect after success
+      await login(email, password);
+      router.replace("/library");
     } catch (err) {
-      const msg =
-        err instanceof Error ? err.message : "Failed to log in. Please try again.";
-      setError(msg);
+      setError("Invalid email or password. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <section className="p-8 max-w-md mx-auto">
-      <h1 className="text-xl font-bold mb-4">Login</h1>
-      <form onSubmit={handleLogin} className="flex flex-col gap-4">
+    <div className="flex items-center justify-center h-screen bg-[#816678]">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-neutral-800 p-8 rounded-lg shadow-md w-full max-w-sm flex flex-col gap-y-4"
+      >
+        <h1 className="text-2xl font-bold text-white">Sign In</h1>
+
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+
         <input
           type="email"
           placeholder="Email"
-          className="p-2 border rounded"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="p-2 rounded bg-neutral-700 text-white placeholder-neutral-400 focus:outline-none"
+          required
         />
+
         <input
           type="password"
           placeholder="Password"
-          className="p-2 border rounded"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          className="p-2 rounded bg-neutral-700 text-white placeholder-neutral-400 focus:outline-none"
+          required
         />
-        <button type="submit" className="bg-purple-600 text-white p-2 rounded">
-          Log In
+
+        <button
+          type="submit"
+          disabled={submitting}
+          className="bg-purple-700 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded transition disabled:opacity-50"
+        >
+          {submitting ? "Signing in…" : "Login"}
         </button>
       </form>
-      {error && <p className="text-red-500 mt-2">{error}</p>}
-    </section>
+    </div>
   );
 }

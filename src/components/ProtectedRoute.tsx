@@ -4,17 +4,23 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { auth } from "@/contexts/firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 
-export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
+type ProtectedRouteProps = {
+  children: React.ReactNode;
+};
+
+export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (!firebaseUser) {
         router.replace("/login"); // redirect if not logged in
       } else {
+        setUser(firebaseUser);
         setLoading(false);
       }
     });
@@ -26,7 +32,16 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
     return (
       <div className="flex items-center justify-center h-screen">
         <p className="text-neutral-300">Loading...</p>
-        {/* Replace with spinner/skeleton later */}
+        {/* TODO: Replace with skeleton */}
+      </div>
+    );
+  }
+
+  if (!user) {
+    // While redirecting, show a fallback
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-neutral-400">Redirecting to login...</p>
       </div>
     );
   }

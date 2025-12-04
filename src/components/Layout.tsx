@@ -1,14 +1,15 @@
 // src/components/Layout.tsx
-"use client";
-
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen bg-neutral-900 text-white">
+    <div className="flex min-h-screen bg-[#816678] text-white">
       {/* Sidebar */}
-      <aside aria-label="Sidebar navigation">
+      <aside
+        aria-label="Sidebar navigation"
+        className="w-20 md:w-64 bg-neutral-800 border-r border-neutral-700"
+      >
         <Sidebar />
       </aside>
 

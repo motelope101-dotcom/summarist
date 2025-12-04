@@ -1,8 +1,11 @@
+// src/pages/for-you.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { db, auth } from "@/contexts/firebaseConfig";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import Link from "next/link";
 
 interface Book {
   id: string;
@@ -15,13 +18,14 @@ interface Book {
 export default function ForYouPage() {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchBooks = async () => {
       try {
         const user = auth.currentUser;
 
-        // If you want personalized recommendations per user:
+        // Personalized recommendations per user
         const baseCollection = collection(db, "recommendations");
         const q = user
           ? query(baseCollection, where("userId", "==", user.uid))
@@ -34,8 +38,9 @@ export default function ForYouPage() {
         })) as Book[];
 
         setBooks(data);
-      } catch (error) {
-        console.error("Error fetching recommendations:", error);
+      } catch (err) {
+        console.error("Error fetching recommendations:", err);
+        setError("Failed to load recommendations. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -45,34 +50,50 @@ export default function ForYouPage() {
   }, []);
 
   return (
-    <section className="flex min-h-[60vh] flex-col items-center justify-center">
-      <h1 className="text-3xl font-bold text-white">For You</h1>
-      <p className="mt-4 text-neutral-400">Personalized recommendations.</p>
+    <ProtectedRoute>
+      <section className="flex min-h-[60vh] flex-col items-center justify-center p-8 bg-[#816678]">
+        <h1 className="text-3xl font-bold text-white">For You</h1>
+        <p className="mt-4 text-neutral-300">Personalized recommendations.</p>
 
-      {loading ? (
-        <p className="mt-2 text-neutral-500 text-sm">
-          Fetching tailored book summaries…
-        </p>
-      ) : books.length === 0 ? (
-        <p className="mt-2 text-neutral-500 text-sm">
-          No recommendations yet. (Add docs in Firestore!)
-        </p>
-      ) : (
-        <ul className="mt-6 space-y-4 w-full max-w-md">
-          {books.map((book) => (
-            <li
-              key={book.id}
-              className="bg-neutral-800 p-4 rounded-lg shadow text-left"
-            >
-              <h2 className="text-lg font-semibold text-white">{book.title}</h2>
-              <p className="text-neutral-400">by {book.author}</p>
-              {book.summary && (
-                <p className="mt-2 text-neutral-500 text-sm">{book.summary}</p>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
+        {loading && (
+          <p className="mt-2 text-neutral-300 text-sm">
+            Fetching tailored book summaries…
+          </p>
+        )}
+
+        {error && (
+          <p className="mt-2 text-red-500 text-sm">{error}</p>
+        )}
+
+        {!loading && !error && books.length === 0 && (
+          <p className="mt-2 text-neutral-300 text-sm">
+            No recommendations yet. (Add docs in Firestore!)
+          </p>
+        )}
+
+        {!loading && !error && books.length > 0 && (
+          <ul className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
+            {books.map((book) => (
+              <li
+                key={book.id}
+                className="bg-neutral-800 p-4 rounded-lg shadow hover:shadow-lg transition"
+              >
+                <Link href={`/book/${book.id}`}>
+                  <h2 className="text-lg font-semibold text-white">
+                    {book.title}
+                  </h2>
+                  <p className="text-neutral-400">by {book.author}</p>
+                  {book.summary && (
+                    <p className="mt-2 text-neutral-300 text-sm line-clamp-3">
+                      {book.summary}
+                    </p>
+                  )}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </ProtectedRoute>
   );
 }
