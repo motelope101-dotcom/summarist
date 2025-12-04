@@ -1,6 +1,6 @@
 // src/pages/auth/login.tsx
 import React, { useState } from "react";
-import { auth } from "@/lib/firebaseConfig";
+import { auth } from "@/contexts/firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/router";
 

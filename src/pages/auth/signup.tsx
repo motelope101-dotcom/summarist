@@ -1,6 +1,6 @@
 // src/pages/auth/signup.tsx
 import React, { useState } from "react";
-import { auth } from "@/lib/firebaseConfig";
+import { auth } from "@/contexts/firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import type { FirebaseError } from "firebase/app";
 import { useRouter } from "next/router";

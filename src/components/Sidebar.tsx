@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { auth } from "@/lib/firebaseConfig";
+import { auth } from "@/contexts/firebaseConfig";
 import { signOut } from "firebase/auth";
 import {
   HomeIcon,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { db, auth } from "@/lib/firebaseConfig";
+import { db, auth } from "@/contexts/firebaseConfig";
 import { collection, getDocs, query, where } from "firebase/firestore";
 
 interface Book {
