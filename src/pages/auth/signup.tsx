@@ -1,32 +1,37 @@
-// src/pages/login.tsx
+// src/pages/auth/signup.tsx
 import React, { useState } from "react";
 import { auth } from "@/lib/firebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import type { FirebaseError } from "firebase/app";
 import { useRouter } from "next/router";
 
-export default function LoginPage() {
+export default function SignUpPage() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      setError("");
-      router.push("/library"); // ✅ redirect after success
+      await createUserWithEmailAndPassword(auth, email, password);
+      setSuccess("Account created successfully!");
+      router.push("/library"); // redirect after success
     } catch (err) {
-      const msg =
-        err instanceof Error ? err.message : "Failed to log in. Please try again.";
-      setError(msg);
+      const message =
+        (err as FirebaseError)?.message ??
+        (err instanceof Error ? err.message : "Failed to create account.");
+      setError(message);
     }
   };
 
   return (
     <section className="p-8 max-w-md mx-auto">
-      <h1 className="text-xl font-bold mb-4">Login</h1>
-      <form onSubmit={handleLogin} className="flex flex-col gap-4">
+      <h1 className="text-xl font-bold mb-4">Sign Up</h1>
+      <form onSubmit={handleSignUp} className="flex flex-col gap-4">
         <input
           type="email"
           placeholder="Email"
@@ -42,10 +47,11 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button type="submit" className="bg-purple-600 text-white p-2 rounded">
-          Log In
+          Sign Up
         </button>
       </form>
       {error && <p className="text-red-500 mt-2">{error}</p>}
+      {success && <p className="text-green-500 mt-2">{success}</p>}
     </section>
   );
 }
