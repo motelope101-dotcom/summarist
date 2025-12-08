@@ -3,7 +3,7 @@
 
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext"; //  brings in auth context
+import { useAuth } from "@/contexts/AuthContext"; // brings in auth context
 
 export default function SalesPage() {
   const { user } = useAuth(); // access current user
@@ -11,6 +11,11 @@ export default function SalesPage() {
   const [error, setError] = useState<string | null>(null);
 
   const handleCheckout = async () => {
+    if (!user) {
+      setError("You must be signed in to subscribe.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -18,7 +23,8 @@ export default function SalesPage() {
       const res = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: user?.email }), //  pass user info if needed
+        // Pass both UID and email
+        body: JSON.stringify({ uid: user.uid, email: user.email }),
       });
 
       if (!res.ok) {
@@ -28,7 +34,7 @@ export default function SalesPage() {
       const session = await res.json();
 
       if (session?.url) {
-        window.location.href = session.url;
+        window.location.href = session.url; // redirect to Stripe Checkout
       } else {
         throw new Error("No session URL returned");
       }

@@ -39,35 +39,43 @@ export default function PlayerLandingPage() {
 
   return (
     <ProtectedRoute>
-      <section className="flex min-h-[60vh] flex-col items-center justify-center p-8">
-        <h1 className="text-3xl font-bold text-white">Player</h1>
+      <section className="p-8 min-h-[60vh] flex flex-col items-center">
+        <h1 className="text-3xl font-bold text-white">Summarist Player</h1>
         <p className="mt-2 text-neutral-400">
-          Welcome to the Summarist Player. Select a book to start listening.
+          Select a book below to start listening.
         </p>
 
         {loading && (
-          <p className="mt-4 text-neutral-500">Loading available players…</p>
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="animate-pulse bg-neutral-800 rounded-lg p-4 shadow"
+              >
+                <div className="bg-neutral-700 h-6 w-2/3 rounded"></div>
+              </div>
+            ))}
+          </div>
         )}
 
-        {error && (
-          <p className="mt-4 text-red-500">{error}</p>
-        )}
+        {error && <p className="mt-4 text-red-500">{error}</p>}
 
         {!loading && !error && books.length === 0 && (
           <p className="mt-4 text-neutral-400">
-            No books available. Add some in Firestore!
+            No books available. Add some in Firestore.
           </p>
         )}
 
         {!loading && !error && books.length > 0 && (
-          <div className="mt-6 flex flex-wrap gap-4 justify-center">
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
             {books.map((book) => (
               <Link
                 key={book.id}
                 href={`/player/${book.id}`}
-                className="bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded"
+                className="bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg p-4 shadow transition flex justify-between items-center"
               >
-                Play {book.title}
+                <span className="font-semibold">{book.title}</span>
+                <span className="text-indigo-400 text-sm">Play</span>
               </Link>
             ))}
           </div>

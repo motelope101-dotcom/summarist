@@ -2,7 +2,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+});
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
@@ -11,6 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    const { uid, email } = req.body; // frontend 
     const origin = req.headers.origin ?? "http://localhost:3000";
 
     const session = await stripe.checkout.sessions.create({
@@ -18,12 +20,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       payment_method_types: ["card"],
       line_items: [
         {
-          price: process.env.STRIPE_PRICE_ID!,
+          price: process.env.STRIPE_PRICE_ID!, // your subscription price ID
           quantity: 1,
         },
       ],
       success_url: `${origin}/library?success=true`,
       cancel_url: `${origin}/sales?canceled=true`,
+
+      // Attach user info
+      customer_email: email,
+      metadata: { uid }, // UID stored for use
     });
 
     return res.status(200).json({ id: session.id, url: session.url });

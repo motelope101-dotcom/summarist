@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { db } from "@/contexts/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import BookCard from "@/components/BookCard";
+import { SearchBar } from "@/components/SearchBar";
 
 type Book = {
   id: string;
@@ -16,55 +17,57 @@ export default function LibraryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "books"));
-        const booksData: Book[] = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...(doc.data() as Omit<Book, "id">),
-        }));
-        setBooks(booksData);
-      } catch (err) {
-        console.error("Error fetching books:", err);
-        setError("Failed to load your library. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchBooks = async (searchTerm?: string) => {
+    setLoading(true);
+    try {
+      const snapshot = await getDocs(collection(db, "books"));
+      const allBooks = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...(doc.data() as Omit<Book, "id">),
+      }));
 
+      if (searchTerm) {
+        const filtered = allBooks.filter(
+          (b) =>
+            b.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            b.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            b.description.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setBooks(filtered);
+      } else {
+        setBooks(allBooks);
+      }
+    } catch (err) {
+      console.error("Error fetching books:", err);
+      setError("Failed to load your library. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchBooks();
   }, []);
 
   return (
     <ProtectedRoute>
-      <section className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-        {loading && (
-          <p className="text-neutral-500">Loading your library...</p>
-        )}
+      <div className="p-8">
+        <SearchBar onSearch={fetchBooks} />
+        <section className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+          {loading &&
+            Array.from({ length: 6 }).map((_, i) => <BookCard key={i} loading />)}
 
-        {error && (
-          <p className="text-red-500">{error}</p>
-        )}
+          {error && <p className="text-red-500">{error}</p>}
 
-        {!loading && !error && books.length === 0 && (
-          <p className="text-neutral-400">Your library is empty.</p>
-        )}
+          {!loading && !error && books.length === 0 && (
+            <p className="text-neutral-400">No results found.</p>
+          )}
 
-        {!loading && !error && books.map((book) => (
-          <Link
-            key={book.id}
-            href={`/book/${book.id}`}
-            className="bg-neutral-800 rounded-lg p-4 shadow hover:shadow-lg transition flex flex-col gap-y-4"
-          >
-            <article>
-              <h2 className="text-lg font-bold text-white">{book.title}</h2>
-              <p className="text-sm text-neutral-400">by {book.author}</p>
-              <p className="text-neutral-300">{book.description}</p>
-            </article>
-          </Link>
-        ))}
-      </section>
+          {!loading &&
+            !error &&
+            books.map((book) => <BookCard key={book.id} book={book} />)}
+        </section>
+      </div>
     </ProtectedRoute>
   );
 }
