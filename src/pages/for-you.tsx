@@ -12,7 +12,7 @@ interface Book {
   title: string;
   author: string;
   summary?: string;
-  userId?: string; // optional for personalization
+  userId?: string; 
 }
 
 export default function ForYouPage() {
@@ -67,7 +67,7 @@ export default function ForYouPage() {
 
         {!loading && !error && books.length === 0 && (
           <p className="mt-2 text-neutral-300 text-sm">
-            No recommendations yet. (Add docs in Firestore!)
+            No recommendations yet. 
           </p>
         )}
 

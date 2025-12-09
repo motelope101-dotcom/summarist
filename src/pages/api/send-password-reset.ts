@@ -12,7 +12,7 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
 };
 
-// Initialize Firebase client app (safe on serverless API routes)
+// Firebase client app 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 

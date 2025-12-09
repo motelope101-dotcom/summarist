@@ -32,13 +32,11 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     return (
       <div className="flex items-center justify-center h-screen">
         <p className="text-neutral-300">Loading...</p>
-        {/* TODO: Replace with skeleton */}
       </div>
     );
   }
 
   if (!user) {
-    // While redirecting, show a fallback
     return (
       <div className="flex items-center justify-center h-screen">
         <p className="text-neutral-400">Redirecting to login...</p>

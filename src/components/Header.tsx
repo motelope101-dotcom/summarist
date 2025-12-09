@@ -9,7 +9,6 @@ export default function Header() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Searching for:", query);
-    // TODO: integrate Firestore search (books collection, authors, topics)
   };
 
   return (

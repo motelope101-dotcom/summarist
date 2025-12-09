@@ -6,7 +6,7 @@ import { getDownloadURL, ref } from "firebase/storage";
 import { storage } from "@/contexts/firebaseConfig";
 import { useAuth } from "@/contexts/AuthContext"; // get current user
 import { doc, getDoc } from "firebase/firestore";
-import { firestore } from "@/contexts/firebaseClient"; // client Firestore SDK
+import { firestore } from "@/contexts/firebaseClient"; // client Firestore 
 import Link from "next/link"; 
 
 type AudioPlayerProps = {
@@ -24,7 +24,7 @@ export default function AudioPlayer({ bookId }: AudioPlayerProps) {
   const [duration, setDuration] = useState(0);
   const [speed, setSpeed] = useState<number>(1);
 
-  // Effect 0: check subscription status
+  // check subscription status
   useEffect(() => {
     const fetchStatus = async () => {
       if (user) {
@@ -38,7 +38,7 @@ export default function AudioPlayer({ bookId }: AudioPlayerProps) {
     fetchStatus();
   }, [user]);
 
-  // Effect 1: fetch audio file
+  // fetch audio file
   useEffect(() => {
     const fetchAudio = async () => {
       try {
@@ -52,7 +52,7 @@ export default function AudioPlayer({ bookId }: AudioPlayerProps) {
     fetchAudio();
   }, [bookId]);
 
-  // Effect 2: restore speed preference
+  // restore speed preference
   useEffect(() => {
     const savedSpeed = localStorage.getItem(`speed-${bookId}`);
     if (savedSpeed !== null) {
@@ -116,7 +116,7 @@ export default function AudioPlayer({ bookId }: AudioPlayerProps) {
   const percent =
     duration > 0 ? Math.min(100, Math.max(0, (progress / duration) * 100)) : 0;
 
-  // Subscription gating
+  // Subscription working
   if (subscriptionStatus !== "active") {
     return (
       <div className="bg-neutral-900 p-6 rounded-lg text-center">

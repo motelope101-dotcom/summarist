@@ -9,7 +9,7 @@ import {
 } from "firebase/auth";
 import { auth } from "@/contexts/firebaseConfig";
 
-// Define the shape of our context
+// Defines the shape of context
 export interface AuthContextType {
   user: User | null;
   loading: boolean;

@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { customerId } = req.query; // pass customerId from Firestore if needed
+    const { customerId } = req.query; // customerId from Firestore if needed
     const origin = req.headers.origin ?? "http://localhost:3000";
 
     const portalSession = await stripe.billingPortal.sessions.create({

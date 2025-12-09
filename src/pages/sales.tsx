@@ -23,7 +23,7 @@ export default function SalesPage() {
       const res = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // Pass both UID and email
+        // UID and email
         body: JSON.stringify({ uid: user.uid, email: user.email }),
       });
 

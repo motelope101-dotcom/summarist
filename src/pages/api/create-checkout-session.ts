@@ -20,14 +20,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       payment_method_types: ["card"],
       line_items: [
         {
-          price: process.env.STRIPE_PRICE_ID!, // your subscription price ID
+          price: process.env.STRIPE_PRICE_ID!, // subscription price ID
           quantity: 1,
         },
       ],
       success_url: `${origin}/library?success=true`,
       cancel_url: `${origin}/sales?canceled=true`,
 
-      // Attach user info
+      // user info
       customer_email: email,
       metadata: { uid }, // UID stored for use
     });
