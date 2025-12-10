@@ -18,7 +18,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (!firebaseUser) {
-        router.replace("/login"); // redirect if not logged in
+        router.replace("/auth/login");
       } else {
         setUser(firebaseUser);
         setLoading(false);
