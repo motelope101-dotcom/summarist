@@ -1,10 +1,9 @@
-// src/components/ProtectedRoute.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { auth } from "@/contexts/firebaseConfig";
-import { onAuthStateChanged, User } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 
 type ProtectedRouteProps = {
   children: React.ReactNode;
@@ -13,15 +12,13 @@ type ProtectedRouteProps = {
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      if (!firebaseUser) {
+      setLoading(false);
+
+      if (!firebaseUser && !router.pathname.startsWith("/auth")) {
         router.replace("/auth/login");
-      } else {
-        setUser(firebaseUser);
-        setLoading(false);
       }
     });
 
@@ -32,14 +29,6 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     return (
       <div className="flex items-center justify-center h-screen">
         <p className="text-neutral-300">Loading...</p>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-neutral-400">Redirecting to login...</p>
       </div>
     );
   }
