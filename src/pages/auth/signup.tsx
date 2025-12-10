@@ -12,7 +12,6 @@ export default function SignupPage() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  // Redirect if already logged in
   useEffect(() => {
     if (user) {
       router.replace("/library");

@@ -27,6 +27,7 @@ export default function LoginPage() {
       await login(email, password);
       router.replace("/library");
     } catch (err) {
+      console.error("Login error:", err);
       setError("Invalid email or password. Please try again.");
     } finally {
       setSubmitting(false);

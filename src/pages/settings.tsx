@@ -26,38 +26,53 @@ export default function SettingsPage() {
   // Fetch subscription + profile info
   useEffect(() => {
     const fetchUserData = async () => {
-      if (user) {
+      if (!user) return;
+
+      try {
         const refUser = doc(firestore, "users", user.uid);
         const snap = await getDoc(refUser);
+
         if (snap.exists()) {
           const data = snap.data();
           setSubscriptionStatus(data.subscriptionStatus || null);
           setDisplayName(data.displayName || "");
           setAvatarUrl(data.avatarUrl || "");
+        } else {
+          console.warn("No user document found in Firestore.");
         }
+      } catch (err) {
+        console.error("Firestore read error:", err);
       }
     };
+
     fetchUserData();
   }, [user]);
 
   // Save profile edits
   const handleSaveProfile = async () => {
-    if (user) {
+    if (!user) return;
+
+    try {
       const refUser = doc(firestore, "users", user.uid);
       await updateDoc(refUser, {
         displayName,
         avatarUrl,
       });
       alert("Profile updated!");
+    } catch (err) {
+      console.error("Firestore update error:", err);
+      alert("Unable to update profile. Check Firestore rules.");
     }
   };
 
   // Trigger Firebase Auth password reset
   const handlePasswordReset = async () => {
+    if (!user?.email) return;
+
     try {
       await fetch("/api/send-password-reset", {
         method: "POST",
-        body: JSON.stringify({ email: user?.email }),
+        body: JSON.stringify({ email: user.email }),
         headers: { "Content-Type": "application/json" },
       });
       alert("Password reset email sent!");

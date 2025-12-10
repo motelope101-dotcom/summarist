@@ -8,8 +8,9 @@ import {
   User,
 } from "firebase/auth";
 import { auth } from "@/contexts/firebaseConfig";
+import { firestore } from "@/contexts/firebaseClient";
+import { doc, setDoc } from "firebase/firestore";
 
-// Defines the shape of context
 export interface AuthContextType {
   user: User | null;
   loading: boolean;
@@ -18,10 +19,8 @@ export interface AuthContextType {
   logout: () => Promise<void>;
 }
 
-// Create and export the context
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Provider component
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -39,7 +38,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signup = async (email: string, password: string) => {
-    await createUserWithEmailAndPassword(auth, email, password);
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await setDoc(doc(firestore, "users", cred.user.uid), {
+      subscriptionStatus: null,
+      displayName: "",
+      avatarUrl: "",
+    });
   };
 
   const logout = async () => {
@@ -53,7 +57,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-// Hook for consuming the context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) throw new Error("useAuth must be used within AuthProvider");
