@@ -1,12 +1,14 @@
+// src/app/player/[bookId]/page.tsx
 "use client";
 
 import { useParams } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import AudioPlayer from "@/components/AudioPlayer"; 
+import AudioPlayer from "@/components/AudioPlayer";
 import { useEffect, useState } from "react";
 import { db } from "@/contexts/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import Image from "next/image";
+import { PlayIcon, PauseCircleIcon } from "@heroicons/react/24/solid";
 
 type Book = {
   id: string;
@@ -14,17 +16,23 @@ type Book = {
   author: string;
   description: string;
   coverUrl?: string;
+  audioUrl?: string;
 };
 
 export default function PlayerPage() {
-  const { bookId } = useParams();
+  const { bookId } = useParams() as { bookId: string };
+
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchBook = async () => {
-      if (!bookId || typeof bookId !== "string") return;
+      if (!bookId) {
+        setError("Player Not Found");
+        setLoading(false);
+        return;
+      }
       try {
         const docRef = doc(db, "books", bookId);
         const docSnap = await getDoc(docRef);
@@ -44,20 +52,19 @@ export default function PlayerPage() {
     fetchBook();
   }, [bookId]);
 
-  if (!bookId) {
-    return (
-      <section className="flex min-h-[60vh] flex-col items-center justify-center bg-[#816678]">
-        <h1 className="text-2xl font-bold text-white">Player Not Found</h1>
-        <p className="mt-2 text-neutral-300">No audio available for this book.</p>
-      </section>
-    );
-  }
-
   return (
     <ProtectedRoute>
       <section className="p-8 flex flex-col items-center bg-[#816678] min-h-[60vh]">
-        {loading && <p className="text-neutral-300 mt-4">Loading book…</p>}
-        {error && <p className="text-red-500 mt-4">{error}</p>}
+        {loading && (
+          <div className="flex items-center gap-2 mt-4 text-neutral-300">
+            <PlayIcon className="h-4 w-4 animate-pulse" />
+            <p>Loading book…</p>
+          </div>
+        )}
+
+        {error && (
+          <p className="text-red-500 mt-4">{error}</p>
+        )}
 
         {!loading && !error && book && (
           <>
@@ -76,9 +83,15 @@ export default function PlayerPage() {
               {book.description}
             </p>
 
-            {/*reusable AudioPlayer */}
+            {/* Playback controls */}
+            <div className="flex gap-4 mt-6">
+              <PlayIcon className="h-6 w-6 text-green-400 cursor-pointer" />
+              <PauseCircleIcon className="h-6 w-6 text-red-400 cursor-pointer" />
+            </div>
+
+            {/* bookId and audioUrl */}
             <div className="mt-8 w-full max-w-xl">
-              <AudioPlayer bookId={book.id} />
+              <AudioPlayer bookId={book.id} audioUrl={book.audioUrl ?? ""} />
             </div>
           </>
         )}

@@ -1,3 +1,4 @@
+// src/app/library/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -6,6 +7,7 @@ import { collection, getDocs } from "firebase/firestore";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import BookCard from "@/components/BookCard";
 import { SearchBar } from "@/components/SearchBar";
+import { BookOpenIcon } from "@heroicons/react/24/outline";
 
 type Book = {
   id: string;
@@ -54,7 +56,13 @@ export default function LibraryPage() {
   return (
     <ProtectedRoute>
       <div className="p-8">
+        <h2 className="text-xl font-semibold flex items-center gap-2 mb-4">
+          <BookOpenIcon className="h-5 w-5 text-indigo-400" /> {/* ✅ smaller */}
+          Your Library
+        </h2>
+
         <SearchBar onSearch={fetchBooks} />
+
         <section className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
           {loading &&
             Array.from({ length: 6 }).map((_, i) => <BookCard key={i} loading />)}
