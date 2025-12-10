@@ -1,12 +1,11 @@
-// src/pages/sales.tsx
 "use client";
 
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext"; // brings in auth context
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function SalesPage() {
-  const { user } = useAuth(); // access current user
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,7 +22,6 @@ export default function SalesPage() {
       const res = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // UID and email
         body: JSON.stringify({ uid: user.uid, email: user.email }),
       });
 
@@ -34,7 +32,7 @@ export default function SalesPage() {
       const session = await res.json();
 
       if (session?.url) {
-        window.location.href = session.url; // redirect to Stripe Checkout
+        window.location.href = session.url;
       } else {
         throw new Error("No session URL returned");
       }
@@ -50,7 +48,8 @@ export default function SalesPage() {
       <section className="flex min-h-[60vh] flex-col items-center justify-center text-center p-8 bg-[#816678]">
         <h1 className="text-3xl font-bold text-white">Sales</h1>
         <p className="mt-4 text-neutral-300 max-w-lg">
-          Unlock unlimited summaries, audio playback, and personalized recommendations.
+          Unlock unlimited summaries, audio playback, and personalized
+          recommendations.
         </p>
 
         {user && (
@@ -59,9 +58,7 @@ export default function SalesPage() {
           </p>
         )}
 
-        {error && (
-          <p className="mt-4 text-red-500 text-sm">{error}</p>
-        )}
+        {error && <p className="mt-4 text-red-500 text-sm">{error}</p>}
 
         <button
           onClick={handleCheckout}

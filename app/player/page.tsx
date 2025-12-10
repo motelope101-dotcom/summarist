@@ -1,4 +1,3 @@
-// src/pages/player.tsx
 "use client";
 
 import { useEffect, useState } from "react";

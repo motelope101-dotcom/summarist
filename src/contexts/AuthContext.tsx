@@ -1,4 +1,5 @@
-// src/contexts/AuthContext.tsx
+"use client";
+
 import { createContext, useContext, useEffect, useState } from "react";
 import {
   onAuthStateChanged,
@@ -7,21 +8,19 @@ import {
   signOut,
   User,
 } from "firebase/auth";
-import { auth } from "@/contexts/firebaseConfig";
-import { firestore } from "@/contexts/firebaseClient";
-import { doc, setDoc } from "firebase/firestore";
+import { auth } from "./firebaseConfig"; 
 
-export interface AuthContextType {
+type AuthContextType = {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
+  signup: (email: string, password: string) => Promise<User>;
   logout: () => Promise<void>;
-}
+};
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -34,16 +33,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const login = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    return cred.user;
   };
 
   const signup = async (email: string, password: string) => {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
-    await setDoc(doc(firestore, "users", cred.user.uid), {
-      subscriptionStatus: null,
-      displayName: "",
-      avatarUrl: "",
-    });
+    return cred.user;
   };
 
   const logout = async () => {
@@ -55,10 +51,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used within AuthProvider");
-  return context;
-};
+export function useAuth() {
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return authContext;
+}

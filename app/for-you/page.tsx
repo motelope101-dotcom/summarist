@@ -1,8 +1,7 @@
-// src/pages/for-you.tsx
 "use client";
 
 import { useEffect, useState } from "react";
-import { db, auth } from "@/contexts/firebaseConfig";
+import { firestore, auth } from "@/contexts/firebaseConfig";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Link from "next/link";
@@ -12,7 +11,7 @@ interface Book {
   title: string;
   author: string;
   summary?: string;
-  userId?: string; 
+  userId?: string;
 }
 
 export default function ForYouPage() {
@@ -26,7 +25,7 @@ export default function ForYouPage() {
         const user = auth.currentUser;
 
         // Personalized recommendations per user
-        const baseCollection = collection(db, "recommendations");
+        const baseCollection = collection(firestore, "recommendations");
         const q = user
           ? query(baseCollection, where("userId", "==", user.uid))
           : baseCollection;
@@ -61,13 +60,11 @@ export default function ForYouPage() {
           </p>
         )}
 
-        {error && (
-          <p className="mt-2 text-red-500 text-sm">{error}</p>
-        )}
+        {error && <p className="mt-2 text-red-500 text-sm">{error}</p>}
 
         {!loading && !error && books.length === 0 && (
           <p className="mt-2 text-neutral-300 text-sm">
-            No recommendations yet. 
+            No recommendations yet.
           </p>
         )}
 

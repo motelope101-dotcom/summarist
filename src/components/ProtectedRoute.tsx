@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation"; 
 import { auth } from "@/contexts/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -17,7 +17,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setLoading(false);
 
-      if (!firebaseUser && !router.pathname.startsWith("/auth")) {
+      if (!firebaseUser) {
         router.replace("/auth/login");
       }
     });
