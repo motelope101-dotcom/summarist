@@ -11,43 +11,75 @@ import {
 } from "@heroicons/react/24/solid";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { db } from "@/contexts/firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { useAuth } from "@/contexts/AuthContext";
+import Image from "next/image";
+
+type Book = {
+  id: string;
+  title: string;
+  author: string;
+  description: string;
+  coverUrl?: string;
+  audioUrl?: string;
+};
 
 export default function PlayerPage() {
   const router = useRouter();
   const { id } = router.query;
+  const { user } = useAuth();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  const [book, setBook] = useState<Book | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [speed, setSpeed] = useState(1);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch audio URL from Firestore
+  // Fetch book doc
   useEffect(() => {
-    const fetchAudio = async () => {
+    const fetchBook = async () => {
       if (!id || typeof id !== "string") return;
       try {
         const docRef = doc(db, "books", id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          const data = docSnap.data();
-          setAudioUrl(data.audioUrl || null);
+          const data = { id: docSnap.id, ...(docSnap.data() as Omit<Book, "id">) };
+          setBook(data);
+
+          // Resume progress if available
+          if (user) {
+            const progSnap = await getDoc(doc(db, "users", user.uid, "progress", id));
+            if (progSnap.exists() && audioRef.current) {
+              const p = progSnap.data();
+              audioRef.current.currentTime = p.currentTime || 0;
+              setProgress(p.currentTime || 0);
+            }
+          }
         } else {
-          setError("Audio not found for this book.");
+          setError("Book not found.");
         }
       } catch (err) {
-        console.error("Error fetching audio:", err);
-        setError("Failed to load audio. Please try again later.");
+        console.error("Error fetching book:", err);
+        setError("Failed to load book details.");
       } finally {
         setLoading(false);
       }
     };
-    fetchAudio();
-  }, [id]);
+    fetchBook();
+  }, [id, user]);
+
+  // Save progress
+  const saveProgress = async (time: number, dur?: number) => {
+    if (!user || !id || typeof id !== "string") return;
+    await setDoc(
+      doc(db, "users", user.uid, "progress", id),
+      { currentTime: time, duration: dur ?? duration, updatedAt: Date.now() },
+      { merge: true }
+    );
+  };
 
   // Toggle play/pause
   const togglePlay = () => {
@@ -99,9 +131,7 @@ export default function PlayerPage() {
     return (
       <section className="flex min-h-[60vh] flex-col items-center justify-center bg-[#816678]">
         <h1 className="text-2xl font-bold text-white">Player Not Found</h1>
-        <p className="mt-2 text-neutral-300">
-          No audio available for this book.
-        </p>
+        <p className="mt-2 text-neutral-300">No audio available for this book.</p>
       </section>
     );
   }
@@ -109,20 +139,35 @@ export default function PlayerPage() {
   return (
     <ProtectedRoute>
       <section className="p-8 flex flex-col items-center bg-[#816678] min-h-[60vh]">
-        <h1 className="text-3xl font-bold text-white">Player: {id}</h1>
+        {loading && <p className="text-neutral-300 mt-4">Loading audio…</p>}
+        {error && <p className="text-red-500 mt-4">{error}</p>}
 
-        {loading && (
-          <p className="text-neutral-300 mt-4">Loading audio…</p>
-        )}
-
-        {error && (
-          <p className="text-red-500 mt-4">{error}</p>
-        )}
-
-        {!loading && !error && audioUrl && (
+        {!loading && !error && book && book.audioUrl && (
           <>
+            {/* Book metadata */}
+            {book.coverUrl && (
+              <Image
+                src={book.coverUrl}
+                alt={book.title}
+                width={160}
+                height={224}
+                className="rounded object-cover mb-4"
+              />
+            )}
+            <h1 className="text-3xl font-bold text-white">{book.title}</h1>
+            <p className="mt-2 text-neutral-400">by {book.author}</p>
+            <p className="mt-4 text-neutral-300 max-w-xl text-center">
+              {book.description}
+            </p>
+
             {/* Audio element */}
-            <audio ref={audioRef} src={audioUrl} className="hidden" />
+            <audio
+              ref={audioRef}
+              src={book.audioUrl}
+              className="hidden"
+              onPause={() => saveProgress(progress, duration)}
+              onEnded={() => saveProgress(0, duration)}
+            />
 
             {/* Controls */}
             <div className="mt-6 flex items-center gap-4">
