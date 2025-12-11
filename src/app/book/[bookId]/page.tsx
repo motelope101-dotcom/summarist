@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { db } from "@/contexts/firebaseConfig"; 
+import { db } from "@/contexts/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import { useParams } from "next/navigation";
 import AudioPlayer from "@/components/AudioPlayer";
@@ -18,7 +18,7 @@ type Book = {
 
 export default function BookDetailPage() {
   const params = useParams();
-  const id = params?.bookId as string; // ✅ cast properly
+  const id = params?.bookId as string;
   const [book, setBook] = useState<Book | null>(null);
 
   useEffect(() => {

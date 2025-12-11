@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { db, auth } from "@/contexts/firebaseConfig"; 
+import { db, auth } from "@/contexts/firebaseConfig";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Link from "next/link";
@@ -89,6 +89,6 @@ export default function ForYouPage() {
           </ul>
         )}
       </section>
-    </ProtectedRoute>
+    </ProtectedRoute> 
   );
 }

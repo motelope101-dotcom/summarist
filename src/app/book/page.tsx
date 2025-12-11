@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { db } from "@/contexts/firebaseConfig"; 
+import { db } from "@/contexts/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import BookCard from "@/components/BookCard";
 
