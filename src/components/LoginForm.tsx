@@ -5,8 +5,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function SignupPage() {
-  const { signup } = useAuth();
+export default function LoginForm() {
+  const { login } = useAuth();
   const router = useRouter();
 
   const [email, setEmail] = useState("");
@@ -18,11 +18,11 @@ export default function SignupPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await signup(email, password);
+      await login(email, password);
       router.push("/"); 
     } catch (err) {
-      console.error("Signup error:", err);
-      setError("Unable to create account. Try again.");
+      console.error("Login error:", err);
+      setError("Invalid credentials or login failed.");
     } finally {
       setLoading(false);
     }
@@ -30,7 +30,7 @@ export default function SignupPage() {
 
   return (
     <section className="flex min-h-[60vh] flex-col items-center justify-center p-8 bg-[#816678]">
-      <h1 className="text-3xl font-bold text-white">Sign Up</h1>
+      <h1 className="text-3xl font-bold text-white">Login</h1>
       <form
         onSubmit={handleSubmit}
         className="mt-6 bg-neutral-800 rounded-lg p-6 shadow w-full max-w-md flex flex-col gap-y-4"
@@ -55,15 +55,15 @@ export default function SignupPage() {
         <button
           type="submit"
           disabled={loading}
-          className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded transition disabled:opacity-50"
+          className="bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded transition disabled:opacity-50"
         >
-          {loading ? "Signing up..." : "Sign Up"}
+          {loading ? "Logging in..." : "Log In"}
         </button>
       </form>
       <p className="mt-4 text-neutral-300">
-        Already have an account?{" "}
-        <Link href="/auth/login" className="text-indigo-400 hover:underline">
-          Log In
+        Don’t have an account?{" "}
+        <Link href="/auth/signup" className="text-indigo-400 hover:underline">
+          Sign Up
         </Link>
       </p>
     </section>
