@@ -55,7 +55,7 @@ export default function Sidebar() {
           aria-label="Logout"
           className="mt-auto hover:text-red-400 transition"
         >
-          <PowerIcon className="h-5 w-5 flex-shrink-0" /> {/* ✅ consistent */}
+          <PowerIcon className="h-5 w-5 flex-shrink-0" /> 
         </button>
       )}
     </aside>

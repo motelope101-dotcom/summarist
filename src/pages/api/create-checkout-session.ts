@@ -8,11 +8,15 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
-    return res.status(405).end("Method Not Allowed");
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 
   try {
-    const { uid, email } = req.body; // frontend 
+    const { uid, email } = req.body;
+    if (!uid || !email) {
+      return res.status(400).json({ error: "Missing required parameters" });
+    }
+
     const origin = req.headers.origin ?? "http://localhost:3000";
 
     const session = await stripe.checkout.sessions.create({
@@ -29,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       // user info
       customer_email: email,
-      metadata: { uid }, // UID stored for use
+      metadata: { uid },
     });
 
     return res.status(200).json({ id: session.id, url: session.url });

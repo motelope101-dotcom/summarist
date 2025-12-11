@@ -25,6 +25,11 @@ a {
 a:hover {
   color: #00e0ff; 
 }
+a:focus-visible {
+  outline: 2px solid #00e0ff;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
@@ -50,10 +55,15 @@ button {
 button:hover {
   background: #00b8d4;
 }
+button:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
 /* Normalize icon sizing inside buttons */
 button svg {
-  height: 1.25rem; 
-  width: 1.25rem;
+  height: 1rem;   /* 16px small icons */
+  width: 1rem;
   flex-shrink: 0;
   display: inline-block;
 }
@@ -128,8 +138,16 @@ input:focus, select:focus, textarea:focus {
 .player-controls button:hover {
   background: #222222;
 }
-/* Strict icon sizing inside player controls */
+/* Strict small icon sizing inside player controls */
 .player-controls button svg {
-  height: 1.25rem; /* 20px */
-  width: 1.25rem;
+  height: 1rem; 
+  width: 1rem;
+  flex-shrink: 0;
+}
+
+/* Global icon utility */
+svg {
+  height: 1rem; /* enforce small icons globally */
+  width: 1rem;
+  flex-shrink: 0;
 }

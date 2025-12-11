@@ -8,7 +8,7 @@ import {
   signOut,
   User,
 } from "firebase/auth";
-import { auth } from "./firebaseConfig"; 
+import { auth } from "./firebaseConfig";
 
 type AuthContextType = {
   user: User | null;
@@ -33,17 +33,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const cred = await signInWithEmailAndPassword(auth, email, password);
-    return cred.user;
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      return cred.user;
+    } catch (err) {
+      console.error("Login error:", err);
+      throw err;
+    }
   };
 
   const signup = async (email: string, password: string) => {
-    const cred = await createUserWithEmailAndPassword(auth, email, password);
-    return cred.user;
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      return cred.user;
+    } catch (err) {
+      console.error("Signup error:", err);
+      throw err;
+    }
   };
 
   const logout = async () => {
-    await signOut(auth);
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.error("Logout error:", err);
+      throw err;
+    }
   };
 
   return (

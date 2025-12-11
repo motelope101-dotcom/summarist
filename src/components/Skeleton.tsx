@@ -1,4 +1,3 @@
-// src/components/Skeleton.tsx
 "use client";
 
 import React from "react";
@@ -10,6 +9,7 @@ type SkeletonProps = {
 export default function Skeleton({ className = "" }: SkeletonProps) {
   return (
     <div
+      aria-hidden="true"
       className={`animate-pulse rounded bg-neutral-700 ${className}`}
     />
   );

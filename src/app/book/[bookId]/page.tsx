@@ -39,11 +39,15 @@ export default function BookDetailPage() {
   }, [id]);
 
   if (!book) {
-    return <p className="text-neutral-300 p-8">Loading book...</p>;
+    return (
+      <p className="text-neutral-300 p-8 bg-[#0a0a0f] rounded-lg">
+        Loading book...
+      </p>
+    );
   }
 
   return (
-    <section className="p-8">
+    <section className="p-8 bg-[#0a0a0f] min-h-screen">
       <h1 className="text-3xl font-bold text-white mb-2">{book.title}</h1>
       <p className="text-neutral-300 mb-4">by {book.author}</p>
       <Image

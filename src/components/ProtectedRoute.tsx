@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import { auth } from "@/contexts/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -26,7 +26,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen bg-[#0a0a0f]">
         <p className="text-neutral-300">Loading...</p>
       </div>
     );

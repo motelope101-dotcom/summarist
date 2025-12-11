@@ -1,4 +1,3 @@
-// src/components/Header.tsx
 "use client";
 
 import { useState } from "react";
@@ -13,12 +12,12 @@ export default function Header() {
   };
 
   return (
-    <header className="w-full border-b border-neutral-700 bg-[#816678] p-4 flex justify-center">
+    <header className="w-full border-b border-neutral-700 bg-[#0a0a0f] p-4 flex justify-center">
       <form
         onSubmit={handleSearch}
         className="w-full max-w-md flex items-center bg-neutral-800 rounded px-3 py-2"
       >
-        <MagnifyingGlassIcon className="h-4 w-4 text-neutral-400" /> 
+        <MagnifyingGlassIcon className="h-5 w-5 flex-shrink-0 text-neutral-400" />
         <input
           type="text"
           aria-label="Search summaries, authors"

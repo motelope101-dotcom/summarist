@@ -53,10 +53,10 @@ export default function PlayerPage() {
 
   return (
     <ProtectedRoute>
-      <section className="p-8 flex flex-col items-center min-h-[60vh]">
+      <section className="p-8 flex flex-col items-center min-h-[60vh] bg-[#0a0a0f]">
         {loading && (
           <div className="flex items-center gap-2 mt-4 text-neutral-300">
-            <PlayIcon className="h-4 w-4 animate-pulse" />
+            <PlayIcon className="h-5 w-5 flex-shrink-0 animate-pulse text-indigo-400" />
             <p>Loading book…</p>
           </div>
         )}
@@ -82,8 +82,8 @@ export default function PlayerPage() {
 
             {/* Playback controls */}
             <div className="flex gap-4 mt-6">
-              <PlayIcon className="h-5 w-5 text-green-400 cursor-pointer" />
-              <PauseCircleIcon className="h-5 w-5 text-red-400 cursor-pointer" />
+              <PlayIcon className="h-5 w-5 flex-shrink-0 text-green-400 cursor-pointer" />
+              <PauseCircleIcon className="h-5 w-5 flex-shrink-0 text-red-400 cursor-pointer" />
             </div>
 
             {/* Audio player */}

@@ -5,7 +5,7 @@ import { db } from "@/contexts/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import BookCard from "@/components/BookCard";
-import { SearchBar } from "@/components/SearchBar";
+import SearchBar from "@/components/SearchBar"; // ✅ corrected import (no curly braces)
 import { BookOpenIcon } from "@heroicons/react/24/outline";
 
 type Book = {
@@ -54,9 +54,9 @@ export default function LibraryPage() {
 
   return (
     <ProtectedRoute>
-      <div className="p-8">
-        <h2 className="text-xl font-semibold flex items-center gap-2 mb-4">
-          <BookOpenIcon className="h-5 w-5 text-indigo-400" /> 
+      <div className="p-8 bg-[#0a0a0f] min-h-screen">
+        <h2 className="text-xl font-semibold flex items-center gap-2 mb-4 text-white">
+          <BookOpenIcon className="h-5 w-5 flex-shrink-0 text-indigo-400" />
           Your Library
         </h2>
 

@@ -40,6 +40,7 @@ export default function AudioPlayer({ audioUrl, bookId }: AudioPlayerProps) {
       />
       <button
         onClick={togglePlay}
+        aria-label={isPlaying ? "Pause audio" : "Play audio"}
         className="player-controls bg-neutral-800 hover:bg-neutral-700 text-white rounded-full p-3 transition flex items-center justify-center"
       >
         {isPlaying ? (

@@ -28,6 +28,7 @@ export default function BookCard({ book, loading }: BookCardProps) {
   return (
     <Link
       href={`/book/${book.id}`}
+      aria-label={`View details for ${book.title}`}
       className="bg-neutral-800 rounded-lg p-4 shadow hover:shadow-lg transition flex flex-col gap-y-4"
     >
       <article>
