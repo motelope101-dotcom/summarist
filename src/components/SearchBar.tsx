@@ -1,4 +1,3 @@
-// src/components/SearchBar.tsx
 "use client";
 
 import { useState } from "react";
@@ -21,7 +20,7 @@ export function SearchBar({ onSearch }: SearchBarProps) {
       onSubmit={handleSearch}
       className="flex w-full max-w-md items-center rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 shadow focus-within:border-indigo-500 transition"
     >
-      <MagnifyingGlassIcon className="text-neutral-400 mr-2 h-5 w-5" />
+      <MagnifyingGlassIcon className="h-5 w-5 text-neutral-400 mr-2" />
       <input
         value={q}
         onChange={(e) => setQ(e.target.value)}

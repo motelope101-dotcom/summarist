@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { firestore } from "@/contexts/firebaseConfig";
+import { db } from "@/contexts/firebaseConfig"; 
 import { collection, getDocs } from "firebase/firestore";
 import BookCard from "@/components/BookCard";
 
@@ -20,7 +20,7 @@ export default function BookPage() {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const querySnapshot = await getDocs(collection(firestore, "books"));
+        const querySnapshot = await getDocs(collection(db, "books"));
         const booksData: Book[] = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...(doc.data() as Omit<Book, "id">),
@@ -37,7 +37,7 @@ export default function BookPage() {
   }, []);
 
   if (loading) {
-    return <p className="text-white">Loading books...</p>;
+    return <p className="text-neutral-300 p-8">Loading books...</p>;
   }
 
   return (

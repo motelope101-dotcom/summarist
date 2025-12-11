@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { firestore, auth } from "@/contexts/firebaseConfig";
+import { db, auth } from "@/contexts/firebaseConfig"; 
 import { collection, getDocs, query, where } from "firebase/firestore";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Link from "next/link";
@@ -23,9 +23,7 @@ export default function ForYouPage() {
     const fetchBooks = async () => {
       try {
         const user = auth.currentUser;
-
-        // Personalized recommendations per user
-        const baseCollection = collection(firestore, "recommendations");
+        const baseCollection = collection(db, "recommendations");
         const q = user
           ? query(baseCollection, where("userId", "==", user.uid))
           : baseCollection;
@@ -50,7 +48,7 @@ export default function ForYouPage() {
 
   return (
     <ProtectedRoute>
-      <section className="flex min-h-[60vh] flex-col items-center justify-center p-8 bg-[#816678]">
+      <section className="flex min-h-[60vh] flex-col items-center justify-center p-8 bg-[#0a0a0f]">
         <h1 className="text-3xl font-bold text-white">For You</h1>
         <p className="mt-4 text-neutral-300">Personalized recommendations.</p>
 

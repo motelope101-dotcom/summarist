@@ -1,4 +1,3 @@
-// src/app/library/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -57,7 +56,7 @@ export default function LibraryPage() {
     <ProtectedRoute>
       <div className="p-8">
         <h2 className="text-xl font-semibold flex items-center gap-2 mb-4">
-          <BookOpenIcon className="h-5 w-5 text-indigo-400" /> {/* ✅ smaller */}
+          <BookOpenIcon className="h-5 w-5 text-indigo-400" /> 
           Your Library
         </h2>
 

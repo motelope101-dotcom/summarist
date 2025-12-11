@@ -22,41 +22,30 @@ export default function SettingsPage() {
     }
   };
 
-  // Fetch subscription + profile info
   useEffect(() => {
     const fetchUserData = async () => {
       if (!user) return;
-
       try {
         const refUser = doc(firestore, "users", user.uid);
         const snap = await getDoc(refUser);
-
         if (snap.exists()) {
           const data = snap.data();
           setSubscriptionStatus(data.subscriptionStatus || null);
           setDisplayName(data.displayName || "");
           setAvatarUrl(data.avatarUrl || "");
-        } else {
-          console.warn("No user document found in Firestore.");
         }
       } catch (err) {
         console.error("Firestore read error:", err);
       }
     };
-
     fetchUserData();
   }, [user]);
 
-  // Save profile edits
   const handleSaveProfile = async () => {
     if (!user) return;
-
     try {
       const refUser = doc(firestore, "users", user.uid);
-      await updateDoc(refUser, {
-        displayName,
-        avatarUrl,
-      });
+      await updateDoc(refUser, { displayName, avatarUrl });
       alert("Profile updated!");
     } catch (err) {
       console.error("Firestore update error:", err);
@@ -64,10 +53,8 @@ export default function SettingsPage() {
     }
   };
 
-  // Trigger Firebase Auth password reset
   const handlePasswordReset = async () => {
     if (!user?.email) return;
-
     try {
       await fetch("/api/send-password-reset", {
         method: "POST",
@@ -82,7 +69,7 @@ export default function SettingsPage() {
 
   return (
     <ProtectedRoute>
-      <section className="flex min-h-[60vh] flex-col items-center justify-center p-8 bg-[#816678]">
+      <section className="flex min-h-[60vh] flex-col items-center justify-center p-8">
         <h1 className="text-3xl font-bold text-white">Settings</h1>
         <p className="mt-4 text-neutral-300">
           Manage your account preferences and subscription here.
@@ -94,7 +81,6 @@ export default function SettingsPage() {
           <p className="mt-2 text-neutral-300">
             Signed in as <span className="font-mono">{user?.email}</span>
           </p>
-
           <button
             onClick={handleLogout}
             className="mt-4 bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded transition"
@@ -145,7 +131,6 @@ export default function SettingsPage() {
         {/* Subscription Management */}
         <div className="mt-6 bg-neutral-800 rounded-lg p-6 shadow w-full max-w-md text-center">
           <h2 className="text-lg font-semibold text-white">Subscription</h2>
-
           {subscriptionStatus ? (
             <p className="mt-2 text-neutral-300">
               Status:{" "}
@@ -162,7 +147,6 @@ export default function SettingsPage() {
           ) : (
             <p className="mt-2 text-neutral-400">No subscription found.</p>
           )}
-
           <Link
             href="/api/create-customer-portal-session"
             className="mt-4 inline-block bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded transition"

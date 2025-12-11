@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { firestore } from "@/contexts/firebaseConfig";
+import { db } from "@/contexts/firebaseConfig"; 
 import { doc, getDoc } from "firebase/firestore";
 import { useParams } from "next/navigation";
 import AudioPlayer from "@/components/AudioPlayer";
@@ -17,14 +17,15 @@ type Book = {
 };
 
 export default function BookDetailPage() {
-  const { id } = useParams();
+  const params = useParams();
+  const id = params?.bookId as string; // ✅ cast properly
   const [book, setBook] = useState<Book | null>(null);
 
   useEffect(() => {
     const fetchBook = async () => {
       if (!id) return;
       try {
-        const docRef = doc(firestore, "books", id as string);
+        const docRef = doc(db, "books", id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           setBook({ id: docSnap.id, ...(docSnap.data() as Omit<Book, "id">) });
@@ -38,7 +39,7 @@ export default function BookDetailPage() {
   }, [id]);
 
   if (!book) {
-    return <p className="text-white">Loading book...</p>;
+    return <p className="text-neutral-300 p-8">Loading book...</p>;
   }
 
   return (

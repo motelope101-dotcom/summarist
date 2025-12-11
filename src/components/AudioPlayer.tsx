@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { PlayIcon, PauseIcon } from "@heroicons/react/24/solid";
 
 type AudioPlayerProps = {
   audioUrl: string;
@@ -12,7 +13,6 @@ export default function AudioPlayer({ audioUrl, bookId }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
-    // Reset playback when switching to a new book
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
@@ -23,10 +23,8 @@ export default function AudioPlayer({ audioUrl, bookId }: AudioPlayerProps) {
     if (!audioRef.current) return;
     if (isPlaying) {
       audioRef.current.pause();
-      setIsPlaying(false);
     } else {
       audioRef.current.play();
-      setIsPlaying(true);
     }
   };
 
@@ -42,9 +40,13 @@ export default function AudioPlayer({ audioUrl, bookId }: AudioPlayerProps) {
       />
       <button
         onClick={togglePlay}
-        className="bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded transition"
+        className="player-controls bg-neutral-800 hover:bg-neutral-700 text-white rounded-full p-3 transition flex items-center justify-center"
       >
-        {isPlaying ? "Pause" : "Play"}
+        {isPlaying ? (
+          <PauseIcon className="h-5 w-5 flex-shrink-0 text-red-400" />
+        ) : (
+          <PlayIcon className="h-5 w-5 flex-shrink-0 text-green-400" />
+        )}
       </button>
     </div>
   );

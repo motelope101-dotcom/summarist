@@ -1,9 +1,6 @@
-// src/app/page.tsx
 "use client";
 
-import { BookOpenIcon } from "@heroicons/react/24/outline";
-import { SparklesIcon } from "@heroicons/react/24/outline";
-import { PlayCircleIcon } from "@heroicons/react/24/outline";
+import { BookOpenIcon, SparklesIcon, PlayCircleIcon } from "@heroicons/react/24/outline";
 
 export default function HomePage() {
   return (
@@ -11,7 +8,7 @@ export default function HomePage() {
       {/* Featured Book */}
       <section>
         <h2 className="text-xl font-semibold flex items-center gap-2">
-          <BookOpenIcon className="h-6 w-6 text-indigo-400" />
+          <BookOpenIcon className="h-5 w-5 text-indigo-400 flex-shrink-0" />
           Featured Book
         </h2>
         <p className="text-neutral-400">Loading featured book...</p>
@@ -20,7 +17,7 @@ export default function HomePage() {
       {/* Top Picks */}
       <section>
         <h2 className="text-xl font-semibold flex items-center gap-2">
-          <SparklesIcon className="h-6 w-6 text-pink-400" />
+          <SparklesIcon className="h-5 w-5 text-pink-400 flex-shrink-0" />
           Top Picks
         </h2>
         <p className="text-neutral-400">Loading top picks...</p>
@@ -29,7 +26,7 @@ export default function HomePage() {
       {/* Continue Listening */}
       <section>
         <h2 className="text-xl font-semibold flex items-center gap-2">
-          <PlayCircleIcon className="h-6 w-6 text-green-400" />
+          <PlayCircleIcon className="h-5 w-5 text-green-400 flex-shrink-0" />
           Continue Listening
         </h2>
         <p className="text-neutral-400">No books in progress</p>

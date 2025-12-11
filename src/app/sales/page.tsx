@@ -45,11 +45,10 @@ export default function SalesPage() {
 
   return (
     <ProtectedRoute>
-      <section className="flex min-h-[60vh] flex-col items-center justify-center text-center p-8 bg-[#816678]">
+      <section className="flex min-h-[60vh] flex-col items-center justify-center text-center p-8 bg-[#0a0a0f]">
         <h1 className="text-3xl font-bold text-white">Sales</h1>
         <p className="mt-4 text-neutral-300 max-w-lg">
-          Unlock unlimited summaries, audio playback, and personalized
-          recommendations.
+          Unlock unlimited summaries, audio playback, and personalized recommendations.
         </p>
 
         {user && (

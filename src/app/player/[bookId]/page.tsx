@@ -1,4 +1,3 @@
-// src/app/player/[bookId]/page.tsx
 "use client";
 
 import { useParams } from "next/navigation";
@@ -54,7 +53,7 @@ export default function PlayerPage() {
 
   return (
     <ProtectedRoute>
-      <section className="p-8 flex flex-col items-center bg-[#816678] min-h-[60vh]">
+      <section className="p-8 flex flex-col items-center min-h-[60vh]">
         {loading && (
           <div className="flex items-center gap-2 mt-4 text-neutral-300">
             <PlayIcon className="h-4 w-4 animate-pulse" />
@@ -62,9 +61,7 @@ export default function PlayerPage() {
           </div>
         )}
 
-        {error && (
-          <p className="text-red-500 mt-4">{error}</p>
-        )}
+        {error && <p className="text-red-500 mt-4">{error}</p>}
 
         {!loading && !error && book && (
           <>
@@ -85,11 +82,11 @@ export default function PlayerPage() {
 
             {/* Playback controls */}
             <div className="flex gap-4 mt-6">
-              <PlayIcon className="h-6 w-6 text-green-400 cursor-pointer" />
-              <PauseCircleIcon className="h-6 w-6 text-red-400 cursor-pointer" />
+              <PlayIcon className="h-5 w-5 text-green-400 cursor-pointer" />
+              <PauseCircleIcon className="h-5 w-5 text-red-400 cursor-pointer" />
             </div>
 
-            {/* bookId and audioUrl */}
+            {/* Audio player */}
             <div className="mt-8 w-full max-w-xl">
               <AudioPlayer bookId={book.id} audioUrl={book.audioUrl ?? ""} />
             </div>
