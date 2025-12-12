@@ -25,6 +25,7 @@ const auth = typeof window !== "undefined" ? getAuth(app) : null;
 
 type AuthContextType = {
   user: User | null;
+  loading: boolean;
   signup: (email: string, password: string) => Promise<User | null>;
   login: (email: string, password: string) => Promise<User | null>;
   logout: () => Promise<void>;
@@ -32,6 +33,7 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  loading: true,
   signup: async () => null,
   login: async () => null,
   logout: async () => {},
@@ -39,11 +41,15 @@ const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  
+  // Initialize loading based on whether auth exists
+  const [loading, setLoading] = useState(!!auth);
 
   useEffect(() => {
     if (!auth) return;
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
+      setLoading(false);
     });
     return () => unsubscribe();
   }, []);
@@ -69,7 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, signup, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, signup, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
