@@ -2,7 +2,14 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth, onAuthStateChanged, User, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  onAuthStateChanged,
+  User,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
@@ -19,11 +26,15 @@ const auth = typeof window !== "undefined" ? getAuth(app) : null;
 type AuthContextType = {
   user: User | null;
   signup: (email: string, password: string) => Promise<User | null>;
+  login: (email: string, password: string) => Promise<User | null>;
+  logout: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   signup: async () => null,
+  login: async () => null,
+  logout: async () => {},
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -44,8 +55,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return cred.user;
   };
 
+  const login = async (email: string, password: string) => {
+    if (!auth) return null;
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    setUser(cred.user);
+    return cred.user;
+  };
+
+  const logout = async () => {
+    if (!auth) return;
+    await signOut(auth);
+    setUser(null);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, signup }}>
+    <AuthContext.Provider value={{ user, signup, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
