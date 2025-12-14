@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+);
 
 type Props = {
   uid: string;
@@ -29,7 +31,7 @@ export default function SubscribeButton({ uid, email }: Props) {
         throw new Error("Failed to create checkout session");
       }
 
-      const data = await res.json();
+      const data: { url?: string } = await res.json();
       const stripe = await stripePromise;
 
       if (stripe && data.url) {
@@ -37,9 +39,14 @@ export default function SubscribeButton({ uid, email }: Props) {
       } else {
         throw new Error("No checkout URL returned");
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Checkout error:", err);
-      setError("Unable to start checkout. Please try again later.");
+      const message =
+        err instanceof Error
+          ? err.message
+          : "Unable to start checkout. Please try again later.";
+      setError(message);
+    } finally {
       setLoading(false);
     }
   };
@@ -49,6 +56,7 @@ export default function SubscribeButton({ uid, email }: Props) {
       <button
         onClick={handleSubscribe}
         disabled={loading}
+        aria-label="Subscribe to premium plan"
         className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded transition disabled:opacity-50"
       >
         {loading ? "Redirecting…" : "Subscribe Now"}

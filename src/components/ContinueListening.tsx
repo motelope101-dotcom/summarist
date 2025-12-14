@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 interface ProgressItem {
   bookId: string;
@@ -13,6 +14,7 @@ interface ProgressItem {
 
 export default function ContinueListening() {
   const { user } = useAuth();
+  const router = useRouter();
   const [progress, setProgress] = useState<ProgressItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -22,9 +24,14 @@ export default function ContinueListening() {
     const fetchProgress = async () => {
       try {
         const snapshot = await getDocs(collection(db, `users/${user.uid}/progress`));
-        const items: ProgressItem[] = snapshot.docs.map(
-          (doc) => doc.data() as ProgressItem
-        );
+        const items: ProgressItem[] = snapshot.docs.map((doc) => {
+          const d = doc.data();
+          return {
+            bookId: d.bookId ?? doc.id,
+            title: d.title ?? "Untitled",
+            currentTime: d.currentTime ?? 0,
+          };
+        });
         setProgress(items);
       } catch (err) {
         console.error("Error fetching progress:", err);
@@ -57,9 +64,13 @@ export default function ContinueListening() {
           >
             <p className="text-neutral-300">
               {item.title} — {Math.floor(item.currentTime / 60)}m{" "}
-              {item.currentTime % 60}s
+              {Math.floor(item.currentTime % 60)}s
             </p>
-            <button className="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded transition">
+            <button
+              onClick={() => router.push(`/player/${item.bookId}`)}
+              aria-label={`Resume ${item.title}`}
+              className="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded transition"
+            >
               Resume
             </button>
           </li>

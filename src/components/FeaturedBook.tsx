@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface Book {
   id?: string;
@@ -17,6 +18,7 @@ interface Book {
 export default function FeaturedBook() {
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -24,8 +26,16 @@ export default function FeaturedBook() {
         const q = query(collection(db, "books"), where("featured", "==", true));
         const snapshot = await getDocs(q);
         if (!snapshot.empty) {
-          const doc = snapshot.docs[0]; 
-          setBook({ id: doc.id, ...(doc.data() as Omit<Book, "id">) });
+          const doc = snapshot.docs[0];
+          const data = doc.data();
+          setBook({
+            id: doc.id,
+            title: data.title ?? "Untitled",
+            author: data.author ?? "Unknown",
+            coverUrl: data.coverUrl ?? "/placeholder.png",
+            description: data.description ?? "",
+            audioUrl: data.audioUrl ?? "",
+          });
         }
       } catch (err) {
         console.error("Error fetching featured book:", err);
@@ -60,7 +70,11 @@ export default function FeaturedBook() {
       {book.description && (
         <p className="text-neutral-300 line-clamp-3 mb-4">{book.description}</p>
       )}
-      <button className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded transition">
+      <button
+        onClick={() => router.push(`/player/${book.id}`)}
+        aria-label={`Start listening to ${book.title}`}
+        className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded transition"
+      >
         Start Listening
       </button>
     </section>

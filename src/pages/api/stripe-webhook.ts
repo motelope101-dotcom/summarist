@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import { firestore } from "@/contexts/firebase-admin"; // Firebase Admin helper
+import { Readable } from "stream";
 
 export const config = {
   api: {
@@ -11,24 +12,42 @@ export const config = {
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+// Read raw body into a Buffer
+async function buffer(readable: Readable): Promise<Buffer> {
+  const chunks: Buffer[] = [];
+  for await (const chunk of readable) {
+    chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
+  }
+  return Buffer.concat(chunks);
+}
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
-    return res.status(405).end("Method Not Allowed");
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const sig = req.headers["stripe-signature"] as string;
+  const sig = req.headers["stripe-signature"] as string | undefined;
+  if (!sig) {
+    return res.status(400).send("Missing Stripe signature");
+  }
 
   let event: Stripe.Event;
   try {
-    const rawBody = await buffer(req); // helper to get raw body
-    event = stripe.webhooks.constructEvent(rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET!);
+    const rawBody = await buffer(req);
+    event = stripe.webhooks.constructEvent(
+      rawBody,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET!
+    );
   } catch (err: unknown) {
-    if (err instanceof Error) {
-      console.error("Webhook signature verification failed:", err.message);
-      return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
-    return res.status(400).send("Webhook Error: Unknown error");
+    const message =
+      err instanceof Error ? err.message : "Webhook signature verification failed";
+    console.error("Webhook signature error:", message);
+    return res.status(400).send(`Webhook Error: ${message}`);
   }
 
   try {
@@ -70,26 +89,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         break;
       }
       default:
-        console.log(`Unhandled event type ${event.type}`);
+        console.log(`Unhandled event type: ${event.type}`);
     }
 
-    res.json({ received: true });
+    return res.json({ received: true });
   } catch (err: unknown) {
-    if (err instanceof Error) {
-      console.error("Webhook handler error:", err.message);
-    } else {
-      console.error("Webhook handler error: Unknown");
-    }
-    res.status(500).send("Internal Server Error");
+    const message =
+      err instanceof Error ? err.message : "Internal Server Error";
+    console.error("Webhook handler error:", message);
+    return res.status(500).send("Internal Server Error");
   }
-}
-
-// Helper to read raw body
-import { Readable } from "stream";
-async function buffer(readable: Readable) {
-  const chunks: Buffer[] = [];
-  for await (const chunk of readable) {
-    chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
-  }
-  return Buffer.concat(chunks);
 }

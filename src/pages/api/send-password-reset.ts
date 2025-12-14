@@ -1,7 +1,7 @@
 // src/pages/api/send-password-reset.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
@@ -12,18 +12,22 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
 };
 
-// Firebase client app 
-const app = initializeApp(firebaseConfig);
+// Ensures Firebase app is initialized 
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
-    return res.status(405).end("Method Not Allowed");
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 
   try {
-    const { email } = JSON.parse(req.body);
+    const { email } = req.body as { email?: string };
+
     if (!email) {
       return res.status(400).json({ error: "Email is required" });
     }
@@ -31,7 +35,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await sendPasswordResetEmail(auth, email);
     return res.status(200).json({ message: "Password reset email sent" });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Unknown error";
+    const message =
+      err instanceof Error ? err.message : "Internal Server Error";
     console.error("Password reset error:", message);
     return res.status(500).json({ error: message });
   }

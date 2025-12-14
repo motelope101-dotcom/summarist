@@ -39,6 +39,7 @@ export default function SalesPage() {
     } catch (err) {
       console.error("Checkout error:", err);
       setError("Unable to start checkout. Please try again later.");
+    } finally {
       setLoading(false);
     }
   };
@@ -51,6 +52,12 @@ export default function SalesPage() {
           Unlock unlimited summaries, audio playback, and personalized recommendations.
         </p>
 
+        <ul className="mt-4 text-neutral-300 text-sm space-y-2">
+          <li> Unlimited book summaries</li>
+          <li> Audio playback with progress tracking</li>
+          <li> Personalized recommendations</li>
+        </ul>
+
         {user && (
           <p className="mt-2 text-neutral-300 text-sm">
             Signed in as <span className="font-mono">{user.email}</span>
@@ -62,6 +69,7 @@ export default function SalesPage() {
         <button
           onClick={handleCheckout}
           disabled={loading}
+          aria-label="Subscribe with Stripe"
           className="mt-6 bg-purple-700 hover:bg-purple-600 text-white px-6 py-3 rounded-lg shadow transition disabled:opacity-50"
         >
           {loading ? "Redirecting…" : "Subscribe with Stripe"}

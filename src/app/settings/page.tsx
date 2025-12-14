@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { firestore } from "@/contexts/firebaseClient";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function SettingsPage() {
   const { user, logout } = useAuth();
@@ -18,41 +19,48 @@ export default function SettingsPage() {
       await logout();
       window.location.href = "/auth/login";
     } catch (err) {
-      console.error("Logout error:", err);
+      console.error("Logout failed:", err);
     }
   };
 
+  // Loads user profile info from Firestore
   useEffect(() => {
-    const fetchUserData = async () => {
+    const loadUserData = async () => {
       if (!user) return;
       try {
-        const refUser = doc(firestore, "users", user.uid);
-        const snap = await getDoc(refUser);
+        const ref = doc(firestore, "users", user.uid);
+        const snap = await getDoc(ref);
         if (snap.exists()) {
-          const data = snap.data();
-          setSubscriptionStatus(data.subscriptionStatus || null);
-          setDisplayName(data.displayName || "");
-          setAvatarUrl(data.avatarUrl || "");
+          const data = snap.data() as {
+            subscriptionStatus?: string;
+            displayName?: string;
+            avatarUrl?: string;
+          };
+          setSubscriptionStatus(data.subscriptionStatus ?? null);
+          setDisplayName(data.displayName ?? "");
+          setAvatarUrl(data.avatarUrl ?? "");
         }
       } catch (err) {
-        console.error("Firestore read error:", err);
+        console.error("Error reading Firestore:", err);
       }
     };
-    fetchUserData();
+    loadUserData();
   }, [user]);
 
+  // Save profile changes back to Firestore
   const handleSaveProfile = async () => {
     if (!user) return;
     try {
-      const refUser = doc(firestore, "users", user.uid);
-      await updateDoc(refUser, { displayName, avatarUrl });
-      alert("Profile updated!");
+      const ref = doc(firestore, "users", user.uid);
+      await updateDoc(ref, { displayName, avatarUrl });
+      alert("Profile updated successfully!");
     } catch (err) {
-      console.error("Firestore update error:", err);
-      alert("Unable to update profile. Check Firestore rules.");
+      console.error("Error updating profile:", err);
+      alert("Could not update profile. Check Firestore rules.");
     }
   };
 
+  // Send password reset email
   const handlePasswordReset = async () => {
     if (!user?.email) return;
     try {
@@ -63,7 +71,7 @@ export default function SettingsPage() {
       });
       alert("Password reset email sent!");
     } catch (err) {
-      console.error("Password reset error:", err);
+      console.error("Error sending reset email:", err);
     }
   };
 
@@ -72,7 +80,7 @@ export default function SettingsPage() {
       <section className="flex min-h-[60vh] flex-col items-center justify-center p-8 bg-[#0a0a0f]">
         <h1 className="text-3xl font-bold text-white">Settings</h1>
         <p className="mt-4 text-neutral-300">
-          Manage your account preferences and subscription here.
+          Update your account details, profile, and subscription here.
         </p>
 
         {/* Account Info */}
@@ -106,6 +114,15 @@ export default function SettingsPage() {
             placeholder="Avatar URL"
             className="mt-2 w-full px-3 py-2 rounded bg-neutral-700 text-white placeholder-neutral-500 outline-none"
           />
+          {avatarUrl && (
+            <Image
+              src={avatarUrl}
+              alt="User avatar"
+              width={64}
+              height={64}
+              className="rounded-full object-cover mx-auto mt-4"
+            />
+          )}
           <button
             onClick={handleSaveProfile}
             className="mt-4 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded transition"
@@ -118,7 +135,7 @@ export default function SettingsPage() {
         <div className="mt-6 bg-neutral-800 rounded-lg p-6 shadow w-full max-w-md text-center">
           <h2 className="text-lg font-semibold text-white">Password Reset</h2>
           <p className="mt-2 text-neutral-300">
-            Send a password reset email to <span className="font-mono">{user?.email}</span>
+            Send a reset email to <span className="font-mono">{user?.email}</span>
           </p>
           <button
             onClick={handlePasswordReset}

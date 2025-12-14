@@ -8,23 +8,29 @@ type Book = {
 };
 
 type BookCardProps = {
-  book?: Book;       // render book details
-  loading?: boolean; // render skeleton loader
+  book?: Book;       // shows book details when provided
+  loading?: boolean; // shows skeleton loader when waiting
 };
 
 export default function BookCard({ book, loading }: BookCardProps) {
+  // Skeleton state
   if (loading) {
     return (
-      <div className="animate-pulse bg-neutral-800 rounded-lg p-4 shadow flex flex-col gap-y-3">
+      <article
+        className="animate-pulse bg-neutral-800 rounded-lg p-4 shadow flex flex-col gap-y-3"
+        aria-hidden="true"
+      >
         <div className="bg-neutral-700 h-6 w-3/4 rounded"></div>
         <div className="bg-neutral-700 h-4 w-1/2 rounded"></div>
         <div className="bg-neutral-700 h-4 w-full rounded"></div>
-      </div>
+      </article>
     );
   }
 
+  // No book provided
   if (!book) return null;
 
+  // Normal card
   return (
     <Link
       href={`/book/${book.id}`}

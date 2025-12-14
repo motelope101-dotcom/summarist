@@ -24,12 +24,19 @@ export default function TopPicksGrid() {
       try {
         const q = query(collection(db, "books"), where("category", "==", "top"));
         const snapshot = await getDocs(q);
-        const data = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...(doc.data() as Omit<Book, "id">),
-        }));
+        const data: Book[] = snapshot.docs.map((doc) => {
+          const d = doc.data();
+          return {
+            id: doc.id,
+            title: d.title ?? "Untitled",
+            author: d.author ?? "Unknown",
+            coverUrl: d.coverUrl ?? "/placeholder.png",
+            description: d.description ?? "",
+            audioUrl: d.audioUrl ?? "",
+          };
+        });
         setBooks(data);
-      } catch (err) {
+      } catch (err: unknown) {
         console.error("Error fetching top picks:", err);
       } finally {
         setLoading(false);
@@ -45,7 +52,7 @@ export default function TopPicksGrid() {
       {loading && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="flex flex-col gap-y-3">
+            <div key={i} className="flex flex-col gap-y-3" aria-hidden="true">
               <Skeleton className="h-[220px] w-[150px]" />
               <Skeleton className="h-6 w-3/4" />
               <Skeleton className="h-4 w-1/2" />

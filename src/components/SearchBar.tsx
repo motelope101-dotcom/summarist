@@ -12,17 +12,23 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(term.trim() || undefined);
+    const trimmed = term.trim();
+    onSearch(trimmed || undefined);
   };
 
   return (
     <form
       onSubmit={handleSubmit}
+      aria-label="Search form"
       className="flex items-center gap-2 bg-neutral-800 rounded px-3 py-2 w-full max-w-md"
     >
-      <MagnifyingGlassIcon className="h-5 w-5 flex-shrink-0 text-neutral-400" />
+      <MagnifyingGlassIcon
+        className="h-5 w-5 flex-shrink-0 text-neutral-400"
+        aria-hidden="true"
+      />
       <input
         type="text"
+        aria-label="Search books"
         value={term}
         onChange={(e) => setTerm(e.target.value)}
         placeholder="Search books..."
@@ -30,6 +36,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
       />
       <button
         type="submit"
+        aria-label="Submit search"
         className="bg-purple-700 hover:bg-purple-600 text-white px-3 py-1 rounded transition"
       >
         Search

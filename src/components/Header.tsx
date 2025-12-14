@@ -2,19 +2,24 @@
 
 import { useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const [query, setQuery] = useState("");
+  const router = useRouter();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Searching for:", query);
+    if (query.trim()) {
+      router.push(`/search?query=${encodeURIComponent(query)}`);
+    }
   };
 
   return (
     <header className="w-full border-b border-neutral-700 bg-[#0a0a0f] p-4 flex justify-center">
       <form
         onSubmit={handleSearch}
+        aria-label="Search form"
         className="w-full max-w-md flex items-center bg-neutral-800 rounded px-3 py-2"
       >
         <MagnifyingGlassIcon className="h-5 w-5 flex-shrink-0 text-neutral-400" />

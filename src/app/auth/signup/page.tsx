@@ -17,12 +17,20 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      setLoading(false);
+      return;
+    }
+
     try {
       await signup(email, password);
-      router.push("/"); 
+      router.push("/home"); 
     } catch (err) {
       console.error("Signup error:", err);
-      setError("Unable to create account. Try again.");
+      setError((err as Error).message || "Unable to create account. Try again.");
     } finally {
       setLoading(false);
     }
@@ -37,6 +45,7 @@ export default function SignupPage() {
       >
         <input
           type="email"
+          aria-label="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
@@ -45,6 +54,7 @@ export default function SignupPage() {
         />
         <input
           type="password"
+          aria-label="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
@@ -55,6 +65,7 @@ export default function SignupPage() {
         <button
           type="submit"
           disabled={loading}
+          aria-label="Sign Up"
           className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded transition disabled:opacity-50"
         >
           {loading ? "Signing up..." : "Sign Up"}

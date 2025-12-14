@@ -1,10 +1,12 @@
 // src/app/layout.tsx
-import '../styles/globals.css';
-import type { Metadata } from 'next';
+import "../styles/globals.css";
+import type { Metadata } from "next";
+import Sidebar from "@/components/Sidebar";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 export const metadata: Metadata = {
-  title: 'Summarist',
-  description: 'Audiobook summaries app',
+  title: "Summarist",
+  description: "Audiobook summaries app",
 };
 
 export default function RootLayout({
@@ -14,7 +16,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+      </head>
+      <body className="bg-[#0a0a0f] text-white flex">
+        <AuthProvider>
+          {/* Sidebar visible on all pages */}
+          <Sidebar />
+          <main className="flex-1">{children}</main>
+        </AuthProvider>
+      </body>
     </html>
   );
 }

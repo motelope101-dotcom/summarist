@@ -5,7 +5,7 @@ import { db } from "@/contexts/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import BookCard from "@/components/BookCard";
-import SearchBar from "@/components/SearchBar"; // ✅ corrected import (no curly braces)
+import SearchBar from "@/components/SearchBar";
 import { BookOpenIcon } from "@heroicons/react/24/outline";
 
 type Book = {
@@ -24,10 +24,15 @@ export default function LibraryPage() {
     setLoading(true);
     try {
       const snapshot = await getDocs(collection(db, "books"));
-      const allBooks = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<Book, "id">),
-      }));
+      const allBooks: Book[] = snapshot.docs.map((doc) => {
+        const d = doc.data();
+        return {
+          id: doc.id,
+          title: d.title ?? "Untitled",
+          author: d.author ?? "Unknown",
+          description: d.description ?? "",
+        };
+      });
 
       if (searchTerm) {
         const filtered = allBooks.filter(
@@ -60,11 +65,13 @@ export default function LibraryPage() {
           Your Library
         </h2>
 
-        <SearchBar onSearch={fetchBooks} />
+        <SearchBar onSearch={fetchBooks} aria-label="Search library" />
 
         <section className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
           {loading &&
-            Array.from({ length: 6 }).map((_, i) => <BookCard key={i} loading />)}
+            Array.from({ length: 6 }).map((_, i) => (
+              <BookCard key={i} loading />
+            ))}
 
           {error && <p className="text-red-500">{error}</p>}
 

@@ -1,3 +1,4 @@
+// Defines the shape of a book object
 export type Book = {
   id: string;
   title: string;
@@ -5,20 +6,22 @@ export type Book = {
   description: string;
   coverUrl: string;
   audioUrl: string;
-  duration: number;
-  featured?: boolean; 
+  duration: number; // playback length in seconds
+  featured?: boolean; // flag for spotlight books
 };
 
+// Sample book data used for seeding or local testing
 export const books: Book[] = [
   {
     id: "atomic-habits",
     title: "Atomic Habits",
     author: "James Clear",
-    description: "An easy and proven way to build good habits and break bad ones.",
+    description:
+    "An easy and proven way to build good habits and break bad ones.",
     coverUrl: "/covers/atomic-habits.jpg",
     audioUrl: "/audio/atomic-habits.mp3",
     duration: 3600,
-    featured: true, 
+    featured: true,
   },
   {
     id: "deep-work",
@@ -33,7 +36,8 @@ export const books: Book[] = [
     id: "lean-startup",
     title: "The Lean Startup",
     author: "Eric Ries",
-    description: "How today's entrepreneurs use continuous innovation to create radically successful businesses.",
+    description:
+    "How today's entrepreneurs use continuous innovation to create radically successful businesses.",
     coverUrl: "/covers/lean-startup.jpg",
     audioUrl: "/audio/lean-startup.mp3",
     duration: 3900,

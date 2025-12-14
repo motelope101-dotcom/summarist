@@ -19,42 +19,50 @@ export default function LoginForm() {
     setLoading(true);
     try {
       await login(email, password);
-      router.push("/"); 
-    } catch (err) {
+      router.push("/");
+    } catch (err: unknown) {
       console.error("Login error:", err);
-      setError("Invalid credentials or login failed.");
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Invalid credentials or login failed.");
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section className="flex min-h-[60vh] flex-col items-center justify-center p-8 bg-[#816678]">
+    <section className="flex min-h-[60vh] flex-col items-center justify-center p-8 bg-[#0a0a0f]">
       <h1 className="text-3xl font-bold text-white">Login</h1>
       <form
         onSubmit={handleSubmit}
+        aria-label="Login form"
         className="mt-6 bg-neutral-800 rounded-lg p-6 shadow w-full max-w-md flex flex-col gap-y-4"
       >
         <input
           type="email"
+          aria-label="Email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          className="px-3 py-2 rounded bg-neutral-700 text-white"
+          className="px-3 py-2 rounded bg-neutral-700 text-white placeholder-neutral-400 focus:outline-none"
           required
         />
         <input
           type="password"
+          aria-label="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
-          className="px-3 py-2 rounded bg-neutral-700 text-white"
+          className="px-3 py-2 rounded bg-neutral-700 text-white placeholder-neutral-400 focus:outline-none"
           required
         />
         {error && <p className="text-red-500 text-sm">{error}</p>}
         <button
           type="submit"
           disabled={loading}
+          aria-label="Log In"
           className="bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded transition disabled:opacity-50"
         >
           {loading ? "Logging in..." : "Log In"}

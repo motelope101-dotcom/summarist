@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation"; 
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   HomeIcon,
@@ -9,10 +9,12 @@ import {
   MusicalNoteIcon,
   Cog6ToothIcon,
   ShoppingCartIcon,
+  SparklesIcon,
   PowerIcon,
 } from "@heroicons/react/24/outline";
 
 export default function Sidebar() {
+  const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
 
@@ -25,37 +27,40 @@ export default function Sidebar() {
     }
   };
 
+  const links = [
+    { href: "/home", label: "Home", icon: HomeIcon },
+    { href: "/library", label: "Library", icon: BookOpenIcon },
+    { href: "/for-you", label: "For You", icon: SparklesIcon },
+    { href: "/player/atomic-habits", label: "Player", icon: MusicalNoteIcon },
+    { href: "/settings", label: "Settings", icon: Cog6ToothIcon },
+    { href: "/sales", label: "Sales", icon: ShoppingCartIcon },
+  ];
+
   return (
-    <aside className="w-20 md:w-64 bg-[#0a0a0f] text-white flex flex-col items-center py-6 space-y-6 border-r border-neutral-700">
-      {/* Navigation */}
-      <Link href="/home" aria-label="Home" className="hover:text-purple-400 transition">
-        <HomeIcon className="h-5 w-5 flex-shrink-0" /> 
-      </Link>
-
-      <Link href="/library" aria-label="Library" className="hover:text-purple-400 transition">
-        <BookOpenIcon className="h-5 w-5 flex-shrink-0" /> 
-      </Link>
-
-      <Link href="/player/atomic-habits" aria-label="Player" className="hover:text-purple-400 transition">
-        <MusicalNoteIcon className="h-5 w-5 flex-shrink-0" /> 
-      </Link>
-
-      <Link href="/settings" aria-label="Settings" className="hover:text-purple-400 transition">
-        <Cog6ToothIcon className="h-5 w-5 flex-shrink-0" /> 
-      </Link>
-
-      <Link href="/sales" aria-label="Sales" className="hover:text-purple-400 transition">
-        <ShoppingCartIcon className="h-5 w-5 flex-shrink-0" /> 
-      </Link>
+    <aside className="w-20 md:w-64 bg-[#0a0a0f] text-white flex flex-col py-6 space-y-6 border-r border-neutral-700">
+      {links.map(({ href, label, icon: Icon }) => (
+        <Link
+          key={href}
+          href={href}
+          aria-label={label}
+          className={`flex items-center justify-center md:justify-start md:space-x-2 hover:text-purple-400 transition ${
+            pathname === href ? "text-purple-400 font-bold" : ""
+          }`}
+        >
+          <Icon className="h-5 w-5 flex-shrink-0" />
+          <span className="hidden md:inline">{label}</span>
+        </Link>
+      ))}
 
       {/* Logout */}
       {user && (
         <button
           onClick={handleLogout}
           aria-label="Logout"
-          className="mt-auto hover:text-red-400 transition"
+          className="mt-auto flex items-center justify-center md:justify-start md:space-x-2 hover:text-red-400 transition"
         >
-          <PowerIcon className="h-5 w-5 flex-shrink-0" /> 
+          <PowerIcon className="h-5 w-5 flex-shrink-0" />
+          <span className="hidden md:inline">Logout</span>
         </button>
       )}
     </aside>

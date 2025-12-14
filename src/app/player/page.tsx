@@ -20,14 +20,17 @@ export default function PlayerLandingPage() {
     const fetchBooks = async () => {
       try {
         const snapshot = await getDocs(collection(db, "books"));
-        const data: Book[] = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          title: (doc.data() as { title: string }).title,
-        }));
+        const data: Book[] = snapshot.docs.map((doc) => {
+          const d = doc.data();
+          return {
+            id: doc.id,
+            title: d.title ?? "Untitled",
+          };
+        });
         setBooks(data);
       } catch (err) {
         console.error("Error fetching books:", err);
-        setError("Failed to load available players.");
+        setError("Failed to load available books.");
       } finally {
         setLoading(false);
       }
@@ -71,6 +74,7 @@ export default function PlayerLandingPage() {
               <Link
                 key={book.id}
                 href={`/player/${book.id}`}
+                aria-label={`Play ${book.title}`}
                 className="bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg p-4 shadow transition flex justify-between items-center"
               >
                 <span className="font-semibold">{book.title}</span>

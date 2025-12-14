@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { initializeApp, getApps } from "firebase/app";
 import {
   getAuth,
@@ -11,6 +17,7 @@ import {
   signOut,
 } from "firebase/auth";
 
+// Firebase config pulled from environment variables
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
@@ -20,7 +27,10 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
 };
 
+// Initialize Firebase app once
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+
+// Only create auth instance in browser
 const auth = typeof window !== "undefined" ? getAuth(app) : null;
 
 type AuthContextType = {
@@ -31,6 +41,7 @@ type AuthContextType = {
   logout: () => Promise<void>;
 };
 
+// Default context values
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
@@ -41,8 +52,6 @@ const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  
-  // Initialize loading based on whether auth exists
   const [loading, setLoading] = useState(!!auth);
 
   useEffect(() => {

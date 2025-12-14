@@ -29,10 +29,16 @@ export default function ForYouPage() {
           : baseCollection;
 
         const snapshot = await getDocs(q);
-        const data = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as Book[];
+        const data = snapshot.docs.map((doc) => {
+          const d = doc.data();
+          return {
+            id: doc.id,
+            title: d.title ?? "Untitled",
+            author: d.author ?? "Unknown",
+            summary: d.summary ?? "",
+            userId: d.userId ?? "",
+          } as Book;
+        });
 
         setBooks(data);
       } catch (err) {
@@ -53,9 +59,14 @@ export default function ForYouPage() {
         <p className="mt-4 text-neutral-300">Personalized recommendations.</p>
 
         {loading && (
-          <p className="mt-2 text-neutral-300 text-sm">
-            Fetching tailored book summaries…
-          </p>
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
+            {[...Array(4)].map((_, i) => (
+              <div
+                key={i}
+                className="bg-neutral-800 p-4 rounded-lg animate-pulse h-32"
+              />
+            ))}
+          </div>
         )}
 
         {error && <p className="mt-2 text-red-500 text-sm">{error}</p>}
@@ -73,7 +84,10 @@ export default function ForYouPage() {
                 key={book.id}
                 className="bg-neutral-800 p-4 rounded-lg shadow hover:shadow-lg transition"
               >
-                <Link href={`/book/${book.id}`}>
+                <Link
+                  href={`/book/${book.id}`}
+                  aria-label={`View details for ${book.title}`}
+                >
                   <h2 className="text-lg font-semibold text-white">
                     {book.title}
                   </h2>
@@ -89,6 +103,6 @@ export default function ForYouPage() {
           </ul>
         )}
       </section>
-    </ProtectedRoute> 
+    </ProtectedRoute>
   );
 }

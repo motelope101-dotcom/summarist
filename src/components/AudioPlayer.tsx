@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { PlayIcon, PauseIcon } from "@heroicons/react/24/solid";
+import { auth, db } from "@/contexts/firebaseConfig";
+import { doc, setDoc } from "firebase/firestore";
 
 type AudioPlayerProps = {
   audioUrl: string;
@@ -11,11 +13,16 @@ type AudioPlayerProps = {
 export default function AudioPlayer({ audioUrl, bookId }: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
+      requestAnimationFrame(() => {
+        setIsPlaying(false);
+        setProgress(0);
+      });
     }
   }, [bookId]);
 
@@ -28,8 +35,25 @@ export default function AudioPlayer({ audioUrl, bookId }: AudioPlayerProps) {
     }
   };
 
+  const handleProgress = () => {
+    if (audioRef.current) {
+      const current = audioRef.current.currentTime;
+      const duration = audioRef.current.duration || 1;
+      setProgress((current / duration) * 100);
+
+      const user = auth.currentUser;
+      if (user) {
+        setDoc(
+          doc(db, `users/${user.uid}/progress`, bookId),
+          { currentTime: current },
+          { merge: true }
+        );
+      }
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-4 w-full">
       <audio
         ref={audioRef}
         src={audioUrl}
@@ -37,6 +61,8 @@ export default function AudioPlayer({ audioUrl, bookId }: AudioPlayerProps) {
         onPause={() => setIsPlaying(false)}
         onEnded={() => setIsPlaying(false)}
         onPlay={() => setIsPlaying(true)}
+        onTimeUpdate={handleProgress}
+        onError={() => console.error("Audio failed to load")}
       />
       <button
         onClick={togglePlay}
@@ -49,6 +75,20 @@ export default function AudioPlayer({ audioUrl, bookId }: AudioPlayerProps) {
           <PlayIcon className="h-5 w-5 flex-shrink-0 text-green-400" />
         )}
       </button>
+      <input
+        type="range"
+        value={progress}
+        onChange={(e) => {
+          if (audioRef.current) {
+            audioRef.current.currentTime =
+              (parseFloat(e.target.value) / 100) * audioRef.current.duration;
+          }
+        }}
+        className="w-full accent-indigo-500"
+        aria-valuenow={progress}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      />
     </div>
   );
 }
