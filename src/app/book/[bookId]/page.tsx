@@ -13,7 +13,7 @@ type Book = {
   author: string;
   description: string;
   coverUrl: string;
-  audioUrl: string;
+  audioUrl: string;   
 };
 
 export default function BookDetailPage() {
