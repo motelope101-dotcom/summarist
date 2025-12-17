@@ -2,45 +2,38 @@
 
 import { useEffect, useState } from "react";
 import { db, auth } from "@/contexts/firebaseConfig";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import Link from "next/link";
 
-interface Book {
-  id: string;
-  title: string;
-  author: string;
-  summary?: string;
-  userId?: string;
+interface Recommendation {
+  bookId: string;
+  reason: string;
 }
 
 export default function ForYouPage() {
-  const [books, setBooks] = useState<Book[]>([]);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchBooks = async () => {
+    const fetchRecommendations = async () => {
       try {
         const user = auth.currentUser;
-        const baseCollection = collection(db, "recommendations");
-        const q = user
-          ? query(baseCollection, where("userId", "==", user.uid))
-          : baseCollection;
+        if (!user) {
+          setError("No user logged in.");
+          return;
+        }
 
-        const snapshot = await getDocs(q);
-        const data = snapshot.docs.map((doc) => {
-          const d = doc.data();
-          return {
-            id: doc.id,
-            title: d.title ?? "Untitled",
-            author: d.author ?? "Unknown",
-            summary: d.summary ?? "",
-            userId: d.userId ?? "",
-          } as Book;
-        });
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
 
-        setBooks(data);
+        if (userSnap.exists()) {
+          const data = userSnap.data();
+          const recs = (data.recommendations || []) as Recommendation[];
+          setRecommendations(recs);
+        } else {
+          setError("User document not found.");
+        }
       } catch (err) {
         console.error("Error fetching recommendations:", err);
         setError("Failed to load recommendations. Please try again later.");
@@ -49,7 +42,7 @@ export default function ForYouPage() {
       }
     };
 
-    fetchBooks();
+    fetchRecommendations();
   }, []);
 
   return (
@@ -71,33 +64,23 @@ export default function ForYouPage() {
 
         {error && <p className="mt-2 text-red-500 text-sm">{error}</p>}
 
-        {!loading && !error && books.length === 0 && (
+        {!loading && !error && recommendations.length === 0 && (
           <p className="mt-2 text-neutral-300 text-sm">
             No recommendations yet.
           </p>
         )}
 
-        {!loading && !error && books.length > 0 && (
+        {!loading && !error && recommendations.length > 0 && (
           <ul className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
-            {books.map((book) => (
+            {recommendations.map((rec, index) => (
               <li
-                key={book.id}
+                key={index}
                 className="bg-neutral-800 p-4 rounded-lg shadow hover:shadow-lg transition"
               >
-                <Link
-                  href={`/book/${book.id}`}
-                  aria-label={`View details for ${book.title}`}
-                >
-                  <h2 className="text-lg font-semibold text-white">
-                    {book.title}
-                  </h2>
-                  <p className="text-neutral-400">by {book.author}</p>
-                  {book.summary && (
-                    <p className="mt-2 text-neutral-300 text-sm line-clamp-3">
-                      {book.summary}
-                    </p>
-                  )}
-                </Link>
+                <h2 className="text-lg font-semibold text-white">
+                  {rec.bookId}
+                </h2>
+                <p className="text-neutral-400">{rec.reason}</p>
               </li>
             ))}
           </ul>
