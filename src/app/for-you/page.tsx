@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { db, auth } from "@/contexts/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import BookCard from "@/components/BookCard"; 
+import BookCard from "@/components/BookCard";
 
 interface Recommendation {
   bookId: string;
@@ -40,7 +40,7 @@ export default function ForYouPage() {
           const data = userSnap.data();
           const recs = (data.recommendations || []) as Recommendation[];
 
-          // Join with books collection
+          // Joined with books collection
           const bookPromises = recs.map(async (rec) => {
             const bookRef = doc(db, "books", rec.bookId);
             const bookSnap = await getDoc(bookRef);
@@ -57,6 +57,7 @@ export default function ForYouPage() {
           });
 
           const books = (await Promise.all(bookPromises)).filter(Boolean) as (Book & { reason: string })[];
+          console.log("RecommendedBooks snapshot:", books); 
           setRecommendedBooks(books);
         } else {
           setError("User document not found.");
@@ -96,8 +97,17 @@ export default function ForYouPage() {
           <ul className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
             {recommendedBooks.map((book) => (
               <li key={book.id} className="flex flex-col gap-y-2">
-                <BookCard book={book} />
-                <p className="text-sm text-neutral-500 italic">{book.reason}</p>
+                <BookCard
+                  book={{
+                    id: book.id,
+                    title: typeof book.title === "string" ? book.title : "",
+                    author: typeof book.author === "string" ? book.author : "",
+                    description: typeof book.description === "string" ? book.description : "",
+                  }}
+                />
+                <p className="text-sm text-neutral-500 italic">
+                  {typeof book.reason === "string" ? book.reason : ""}
+                </p>
               </li>
             ))}
           </ul>
