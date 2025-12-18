@@ -8,7 +8,7 @@ type Book = {
 };
 
 type BookCardProps = {
-  book?: Book;       // shows book 
+  book?: Book;       // shows book details
   loading?: boolean; // shows skeleton loader
 };
 
@@ -33,7 +33,7 @@ export default function BookCard({ book, loading }: BookCardProps) {
   // Normal card
   return (
     <Link
-      href={`/book/${String(book.id)}`}
+      href={`/book/${String(book.id ?? "")}`}
       aria-label={`View details for ${String(book.title ?? "")}`}
       className="bg-neutral-800 rounded-lg p-4 shadow hover:shadow-lg transition flex flex-col gap-y-4"
     >

@@ -9,6 +9,7 @@ import BookCard from "@/components/BookCard";
 interface Recommendation {
   bookId: string;
   reason: string;
+  subscriptionStatus: string;
 }
 
 interface Book {
@@ -36,7 +37,8 @@ export default function ForYouPage() {
           return;
         }
 
-        const userRef = doc(db, "users", user.uid);
+        // Using "user" (singular) collection
+        const userRef = doc(db, "user", user.uid);
         const userSnap = await getDoc(userRef);
         console.log("User snapshot exists:", userSnap.exists());
 
@@ -53,7 +55,7 @@ export default function ForYouPage() {
             if (bookSnap.exists()) {
               const bookData = bookSnap.data() as Omit<Book, "id">;
               return {
-                id: bookSnap.id,
+                id: String(bookSnap.id),
                 title: String(bookData.title ?? ""),
                 author: String(bookData.author ?? ""),
                 description: String(bookData.description ?? ""),
