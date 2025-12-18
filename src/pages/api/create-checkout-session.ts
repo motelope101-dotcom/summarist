@@ -1,4 +1,3 @@
-// src/pages/api/create-checkout-session.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 
@@ -9,10 +8,7 @@ interface CheckoutRequestBody {
   email: string;
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -20,7 +16,6 @@ export default async function handler(
 
   try {
     const { uid, email } = req.body as CheckoutRequestBody;
-
     if (!uid || !email) {
       return res.status(400).json({ error: "Missing required parameters" });
     }
@@ -44,8 +39,7 @@ export default async function handler(
 
     return res.status(200).json({ id: session.id, url: session.url });
   } catch (err: unknown) {
-    const message =
-      err instanceof Error ? err.message : "Internal Server Error";
+    const message = err instanceof Error ? err.message : "Internal Server Error";
     console.error("Stripe session error:", message);
     return res.status(500).json({ error: message });
   }
