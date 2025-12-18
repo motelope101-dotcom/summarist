@@ -51,7 +51,7 @@ export default function SettingsPage() {
   const handleSaveProfile = async () => {
     if (!user) return;
     try {
-      const ref = doc(firestore, "users", user.uid);
+      const ref = doc(firestore, "user", user.uid);
       await updateDoc(ref, { displayName, avatarUrl });
       alert("Profile updated successfully!");
     } catch (err) {
