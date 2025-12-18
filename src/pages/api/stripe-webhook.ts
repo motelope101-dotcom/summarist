@@ -51,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             metadata: { uid },
           });
 
-          await firestore.collection("users").doc(uid).set(
+          await firestore.collection("user").doc(uid).set(
             {
               subscriptionStatus: "active",
               stripeCustomerId: session.customer as string,
@@ -65,16 +65,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       case "customer.subscription.updated": {
         const subscription = event.data.object as Stripe.Subscription;
         const customerId = subscription.customer as string;
-        // Lookup user by stripeCustomerId
         const userSnap = await firestore
-          .collection("users")
+          .collection("user")
           .where("stripeCustomerId", "==", customerId)
           .limit(1)
           .get();
 
         if (!userSnap.empty) {
           const uid = userSnap.docs[0].id;
-          await firestore.collection("users").doc(uid).set(
+          await firestore.collection("user").doc(uid).set(
             { subscriptionStatus: subscription.status },
             { merge: true }
           );
@@ -86,14 +85,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const subscription = event.data.object as Stripe.Subscription;
         const customerId = subscription.customer as string;
         const userSnap = await firestore
-          .collection("users")
+          .collection("user")
           .where("stripeCustomerId", "==", customerId)
           .limit(1)
           .get();
 
         if (!userSnap.empty) {
           const uid = userSnap.docs[0].id;
-          await firestore.collection("users").doc(uid).set(
+          await firestore.collection("user").doc(uid).set(
             { subscriptionStatus: "canceled" },
             { merge: true }
           );

@@ -9,7 +9,7 @@ export default function ManageSubscriptionButton() {
     const fetchCustomerId = async () => {
       const uid = auth.currentUser?.uid;
       if (!uid) return;
-      const userDoc = await getDoc(doc(firestore, "users", uid));
+      const userDoc = await getDoc(doc(firestore, "user", uid)); 
       if (userDoc.exists()) {
         setStripeCustomerId(userDoc.data().stripeCustomerId);
       }
@@ -17,7 +17,7 @@ export default function ManageSubscriptionButton() {
     fetchCustomerId();
   }, []);
 
-  const handleManageSubscription = async () => {
+  const handleManageSubscription = () => {
     if (!stripeCustomerId) return;
     window.location.href = `/api/create-customer-portal-session?stripeCustomerId=${stripeCustomerId}`;
   };
