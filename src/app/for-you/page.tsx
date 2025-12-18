@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { db, auth } from "@/contexts/firebaseConfig";
+import { db } from "@/contexts/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import BookCard from "@/components/BookCard";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Recommendation {
   bookId: string;
@@ -20,32 +21,23 @@ interface Book {
 }
 
 export default function ForYouPage() {
+  const { user, loading: authLoading } = useAuth();
   const [recommendedBooks, setRecommendedBooks] = useState<(Book & { reason: string })[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let isActive = true; // cleanup 
+    let isActive = true;
 
     const fetchRecommendations = async () => {
+      if (!user) return; // guard
+
       try {
-        const user = auth.currentUser;
-        console.log("Current user:", user);
-
-        if (!user) {
-          if (isActive) setError("No user logged in.");
-          return;
-        }
-
-        // Using "user" (singular) collection
         const userRef = doc(db, "user", user.uid);
         const userSnap = await getDoc(userRef);
-        console.log("User snapshot exists:", userSnap.exists());
 
         if (userSnap.exists()) {
           const data = userSnap.data();
-          console.log("User data:", data);
-
           const recs = (data.recommendations || []) as Recommendation[];
 
           const bookPromises = recs.map(async (rec) => {
@@ -66,11 +58,7 @@ export default function ForYouPage() {
           });
 
           const books = (await Promise.all(bookPromises)).filter(Boolean) as (Book & { reason: string })[];
-
-          if (isActive) {
-            console.log("RecommendedBooks snapshot:", books);
-            setRecommendedBooks(books);
-          }
+          if (isActive) setRecommendedBooks(books);
         } else {
           if (isActive) setError("User document not found.");
         }
@@ -82,11 +70,16 @@ export default function ForYouPage() {
       }
     };
 
-    fetchRecommendations();
+    if (!authLoading && user) {
+      fetchRecommendations();
+    } else {
+      setLoading(false); 
+    }
+
     return () => {
-      isActive = false; // cleanup
+      isActive = false;
     };
-  }, []);
+  }, [authLoading, user]);
 
   return (
     <ProtectedRoute>
@@ -94,7 +87,7 @@ export default function ForYouPage() {
         <h1 className="text-3xl font-bold text-white">For You</h1>
         <p className="mt-4 text-neutral-300">Personalized recommendations.</p>
 
-        {loading && (
+        {(authLoading || loading) && (
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
             {[...Array(4)].map((_, i) => (
               <BookCard key={i} loading />
@@ -104,11 +97,11 @@ export default function ForYouPage() {
 
         {error && <p className="mt-2 text-red-500 text-sm">{error}</p>}
 
-        {!loading && !error && recommendedBooks.length === 0 && (
+        {!authLoading && !loading && !error && recommendedBooks.length === 0 && (
           <p className="mt-2 text-neutral-300 text-sm">No recommendations yet.</p>
         )}
 
-        {!loading && !error && recommendedBooks.length > 0 && (
+        {!authLoading && !loading && !error && recommendedBooks.length > 0 && (
           <ul className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
             {recommendedBooks.map((book) => (
               <li key={book.id} className="flex flex-col gap-y-2">

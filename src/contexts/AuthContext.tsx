@@ -30,7 +30,7 @@ const firebaseConfig = {
 // Initialize Firebase app once
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 
-// Only create auth instance in browser
+// create auth instance in browser
 const auth = typeof window !== "undefined" ? getAuth(app) : null;
 
 type AuthContextType = {
@@ -41,7 +41,6 @@ type AuthContextType = {
   logout: () => Promise<void>;
 };
 
-// Default context values
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
@@ -52,13 +51,13 @@ const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(!!auth);
+  const [loading, setLoading] = useState(true); // always start true
 
   useEffect(() => {
     if (!auth) return;
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
-      setLoading(false);
+      setLoading(false); // flips once Firebase resolves
     });
     return () => unsubscribe();
   }, []);
