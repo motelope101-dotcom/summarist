@@ -6,7 +6,7 @@ import { auth, db } from "@/contexts/firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
 
 type AudioPlayerProps = {
-  audioUrl?: string;   
+  audioUrl?: string;
   bookId: string;
 };
 
@@ -31,7 +31,9 @@ export default function AudioPlayer({ audioUrl, bookId }: AudioPlayerProps) {
     if (isPlaying) {
       audioRef.current.pause();
     } else {
-      audioRef.current.play();
+      audioRef.current.play().catch((err) => {
+        console.error("Audio play failed:", err);
+      });
     }
   };
 
@@ -52,18 +54,21 @@ export default function AudioPlayer({ audioUrl, bookId }: AudioPlayerProps) {
     }
   };
 
+  // Debug log: show which src is being used
+  console.log("AudioPlayer using src:", audioUrl);
+
   return (
     <div className="flex flex-col items-center gap-4 w-full">
       <audio
         ref={audioRef}
-        src={audioUrl || "/audio/Recording.mp3"}  
+        src={audioUrl} // only use Firestore-provided URL
         preload="auto"
         onPause={() => setIsPlaying(false)}
         onEnded={() => setIsPlaying(false)}
         onPlay={() => setIsPlaying(true)}
         onTimeUpdate={handleProgress}
-        onError={() =>
-          console.error(`Audio failed to load for book ${bookId}`)
+        onError={(e) =>
+          console.error(`Audio failed to load for book ${bookId}`, audioUrl, e)
         }
       />
       <button

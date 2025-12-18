@@ -13,7 +13,7 @@ type Book = {
   author: string;
   description: string;
   coverUrl: string;
-  audioUrl: string;   
+  audioUrl: string;
 };
 
 export default function BookDetailPage() {
@@ -29,7 +29,9 @@ export default function BookDetailPage() {
         const docRef = doc(db, "books", id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          setBook({ id: docSnap.id, ...(docSnap.data() as Omit<Book, "id">) });
+          const data = docSnap.data() as Omit<Book, "id">;
+          console.log("Fetched book data:", data);
+          setBook({ id: docSnap.id, ...data });
         }
       } catch (error) {
         console.error("Error fetching book:", error);
@@ -48,6 +50,8 @@ export default function BookDetailPage() {
     return <p className="text-neutral-300 p-8">Book not found.</p>;
   }
 
+  console.log("Audio URL being passed:", book.audioUrl);
+
   return (
     <section className="p-8 bg-[#0a0a0f] min-h-screen">
       <h1 className="text-3xl font-bold text-white mb-2">{book.title}</h1>
@@ -60,11 +64,15 @@ export default function BookDetailPage() {
         className="object-cover rounded shadow mb-6"
       />
       <p className="text-neutral-200 mb-6">{book.description}</p>
-      <AudioPlayer
-        audioUrl={book.audioUrl}
-        bookId={book.id}
-        aria-label={`Audio player for ${book.title}`}
-      />
+      {book.audioUrl ? (
+        <AudioPlayer
+          audioUrl={book.audioUrl}
+          bookId={book.id}
+          aria-label={`Audio player for ${book.title}`}
+        />
+      ) : (
+        <p className="text-red-400">No audio available for this book.</p>
+      )}
     </section>
   );
 }
