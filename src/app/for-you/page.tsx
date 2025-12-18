@@ -34,17 +34,7 @@ export default function ForYouPage() {
 
       try {
         const userRef = doc(db, "user", user.uid);
-
-        // Swallow AbortError so it never surfaces as "Uncaught (in promise)"
-        const userSnap = await getDoc(userRef).catch((err: unknown) => {
-          if (err instanceof Error && err.name === "AbortError") return null;
-          throw err;
-        });
-
-        if (!userSnap) {
-          // Aborted — stop silently
-          return;
-        }
+        const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
           const data = userSnap.data();
@@ -52,16 +42,7 @@ export default function ForYouPage() {
 
           const bookPromises = recs.map(async (rec) => {
             const bookRef = doc(db, "books", rec.bookId);
-
-            const bookSnap = await getDoc(bookRef).catch((err: unknown) => {
-              if (err instanceof Error && err.name === "AbortError") return null;
-              throw err;
-            });
-
-            if (!bookSnap) {
-              // Aborted — ignore this item
-              return null;
-            }
+            const bookSnap = await getDoc(bookRef);
 
             if (bookSnap.exists()) {
               const bookData = bookSnap.data() as Omit<Book, "id">;
@@ -76,17 +57,12 @@ export default function ForYouPage() {
             return null;
           });
 
-          // Promise.all will not throw AbortError because each item swallows it
           const books = (await Promise.all(bookPromises)).filter(Boolean) as (Book & { reason: string })[];
           if (isActive) setRecommendedBooks(books);
         } else {
           if (isActive) setError("User document not found.");
         }
-      } catch (err: unknown) {
-        if (err instanceof Error && err.name === "AbortError") {
-          // Swallow AbortError at the outer level too
-          return;
-        }
+      } catch (err) {
         console.error("Error fetching recommendations:", err);
         if (isActive) setError("Failed to load recommendations. Please try again later.");
       } finally {
