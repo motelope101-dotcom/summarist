@@ -25,7 +25,7 @@ export default function ForYouPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let isActive = true; // cleanup flag
+    let isActive = true; // cleanup 
 
     const fetchRecommendations = async () => {
       try {

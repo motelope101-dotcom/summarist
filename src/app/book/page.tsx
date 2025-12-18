@@ -20,40 +20,72 @@ export default function BookPage() {
   const bookId = params.bookId;
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isActive = true; // cleanup 
+
     const fetchBook = async () => {
-      if (!bookId) return;
+      if (!bookId) {
+        if (isActive) setError("No book ID provided.");
+        setLoading(false);
+        return;
+      }
       try {
         const docRef = doc(db, "books", bookId);
         const docSnap = await getDoc(docRef);
+
         if (docSnap.exists()) {
-          setBook({ id: docSnap.id, ...(docSnap.data() as Omit<Book, "id">) });
+          const data = docSnap.data() as Partial<Book>;
+          if (isActive) {
+            setBook({
+              id: String(docSnap.id),
+              title: String(data.title ?? ""),
+              author: String(data.author ?? ""),
+              description: String(data.description ?? ""),
+              coverUrl: String(data.coverUrl ?? ""),
+            });
+          }
+        } else {
+          if (isActive) setError("Book not found.");
         }
-      } catch (error) {
-        console.error("Error fetching book:", error);
+      } catch (err) {
+        console.error("Error fetching book:", err);
+        if (isActive) setError("Failed to load book. Please try again later.");
       } finally {
-        setLoading(false);
+        if (isActive) setLoading(false);
       }
     };
+
     fetchBook();
+    return () => {
+      isActive = false; // cleanup 
+    };
   }, [bookId]);
 
   if (loading) return <p className="text-neutral-300 p-8">Loading book...</p>;
+  if (error) return <p className="text-neutral-300 p-8">{error}</p>;
   if (!book) return <p className="text-neutral-300 p-8">Book not found.</p>;
 
   return (
     <section className="p-8 flex flex-col items-center text-white">
-      <Image
-        src={book.coverUrl}
-        alt={book.title}
-        width={192}
-        height={288}
-        className="object-cover rounded shadow mb-6"
-      />
-      <h1 className="text-3xl font-bold">{book.title}</h1>
-      <h2 className="text-lg text-neutral-400">by {book.author}</h2>
-      <p className="mt-4 max-w-xl text-center">{book.description}</p>
+      {book.coverUrl ? (
+        <Image
+          src={book.coverUrl}
+          alt={String(book.title ?? "Book cover")}
+          width={192}
+          height={288}
+          className="object-cover rounded shadow mb-6"
+        />
+      ) : (
+        <div className="w-[192px] h-[288px] bg-neutral-700 rounded shadow mb-6 flex items-center justify-center text-neutral-400">
+          No Cover
+        </div>
+      )}
+
+      <h1 className="text-3xl font-bold">{String(book.title)}</h1>
+      <h2 className="text-lg text-neutral-400">by {String(book.author)}</h2>
+      <p className="mt-4 max-w-xl text-center">{String(book.description)}</p>
 
       <Link
         href={`/player/${book.id}`}
