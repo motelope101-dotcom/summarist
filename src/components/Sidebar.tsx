@@ -28,7 +28,7 @@ export default function Sidebar() {
   };
 
   const links = [
-    { href: "/home", label: "Home", icon: HomeIcon },
+    { href: "/", label: "Home", icon: HomeIcon },
     { href: "/library", label: "Library", icon: BookOpenIcon },
     { href: "/for-you", label: "For You", icon: SparklesIcon },
     { href: "/player/atomic-habits", label: "Player", icon: MusicalNoteIcon },
