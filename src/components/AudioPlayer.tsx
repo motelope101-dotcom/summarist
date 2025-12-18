@@ -46,7 +46,7 @@ export default function AudioPlayer({ audioUrl, bookId }: AudioPlayerProps) {
       const user = auth.currentUser;
       if (user) {
         setDoc(
-          doc(db, `users/${user.uid}/progress`, bookId),
+          doc(db, `user/${user.uid}/progress`, bookId),
           { currentTime: current },
           { merge: true }
         );

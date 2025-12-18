@@ -23,7 +23,7 @@ export default function ContinueListening() {
 
     const fetchProgress = async () => {
       try {
-        const snapshot = await getDocs(collection(db, `users/${user.uid}/progress`));
+        const snapshot = await getDocs(collection(db, `user/${user.uid}/progress`));
         const items: ProgressItem[] = snapshot.docs.map((doc) => {
           const d = doc.data();
           return {
