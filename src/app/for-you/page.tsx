@@ -30,10 +30,10 @@ export default function ForYouPage() {
     let isActive = true;
 
     const fetchRecommendations = async () => {
-      if (!user) return; // guard
+      if (!user) return;
 
       try {
-        const userRef = doc(db, "user", user.uid);
+        const userRef = doc(db, "user", user.uid); // matches my Firestore
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
@@ -41,20 +41,27 @@ export default function ForYouPage() {
           const recs = (data.recommendations || []) as Recommendation[];
 
           const bookPromises = recs.map(async (rec) => {
-            const bookRef = doc(db, "books", rec.bookId);
-            const bookSnap = await getDoc(bookRef);
+            try {
+              const bookRef = doc(db, "books", rec.bookId);
+              const bookSnap = await getDoc(bookRef);
 
-            if (bookSnap.exists()) {
-              const bookData = bookSnap.data() as Omit<Book, "id">;
-              return {
-                id: String(bookSnap.id),
-                title: String(bookData.title ?? ""),
-                author: String(bookData.author ?? ""),
-                description: String(bookData.description ?? ""),
-                reason: String(rec.reason ?? ""),
-              };
+              if (bookSnap.exists()) {
+                const bookData = bookSnap.data() as Omit<Book, "id">;
+                return {
+                  id: String(bookSnap.id),
+                  title: String(bookData.title ?? ""),
+                  author: String(bookData.author ?? ""),
+                  description: String(bookData.description ?? ""),
+                  reason: String(rec.reason ?? ""),
+                };
+              }
+              return null;
+            } catch (err: unknown) {
+              if (err instanceof Error && err.name === "AbortError") {
+                return null; // ignores aborted requests
+              }
+              throw err;
             }
-            return null;
           });
 
           const books = (await Promise.all(bookPromises)).filter(Boolean) as (Book & { reason: string })[];
@@ -62,7 +69,10 @@ export default function ForYouPage() {
         } else {
           if (isActive) setError("User document not found.");
         }
-      } catch (err) {
+      } catch (err: unknown) {
+        if (err instanceof Error && err.name === "AbortError") {
+          return; // ignores aborted requests
+        }
         console.error("Error fetching recommendations:", err);
         if (isActive) setError("Failed to load recommendations. Please try again later.");
       } finally {
@@ -73,7 +83,7 @@ export default function ForYouPage() {
     if (!authLoading && user) {
       fetchRecommendations();
     } else {
-      setLoading(false); 
+      setLoading(false);
     }
 
     return () => {
@@ -113,9 +123,7 @@ export default function ForYouPage() {
                     description: String(book.description),
                   }}
                 />
-                <p className="text-sm text-neutral-500 italic">
-                  {String(book.reason)}
-                </p>
+                <p className="text-sm text-neutral-500 italic">{String(book.reason)}</p>
               </li>
             ))}
           </ul>
