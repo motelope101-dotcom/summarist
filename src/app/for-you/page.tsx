@@ -24,23 +24,28 @@ export default function ForYouPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isActive = true; // cleanup flag
+
     const fetchRecommendations = async () => {
       try {
         const user = auth.currentUser;
+        console.log("Current user:", user);
+
         if (!user) {
-          setError("No user logged in.");
+          if (isActive) setError("No user logged in.");
           return;
         }
 
-        // Get user doc
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
+        console.log("User snapshot exists:", userSnap.exists());
 
         if (userSnap.exists()) {
           const data = userSnap.data();
+          console.log("User data:", data);
+
           const recs = (data.recommendations || []) as Recommendation[];
 
-          // Joined with books collection
           const bookPromises = recs.map(async (rec) => {
             const bookRef = doc(db, "books", rec.bookId);
             const bookSnap = await getDoc(bookRef);
@@ -48,29 +53,37 @@ export default function ForYouPage() {
             if (bookSnap.exists()) {
               const bookData = bookSnap.data() as Omit<Book, "id">;
               return {
-                ...bookData,
                 id: bookSnap.id,
-                reason: rec.reason,
+                title: String(bookData.title ?? ""),
+                author: String(bookData.author ?? ""),
+                description: String(bookData.description ?? ""),
+                reason: String(rec.reason ?? ""),
               };
             }
             return null;
           });
 
           const books = (await Promise.all(bookPromises)).filter(Boolean) as (Book & { reason: string })[];
-          console.log("RecommendedBooks snapshot:", books); 
-          setRecommendedBooks(books);
+
+          if (isActive) {
+            console.log("RecommendedBooks snapshot:", books);
+            setRecommendedBooks(books);
+          }
         } else {
-          setError("User document not found.");
+          if (isActive) setError("User document not found.");
         }
       } catch (err) {
         console.error("Error fetching recommendations:", err);
-        setError("Failed to load recommendations. Please try again later.");
+        if (isActive) setError("Failed to load recommendations. Please try again later.");
       } finally {
-        setLoading(false);
+        if (isActive) setLoading(false);
       }
     };
 
     fetchRecommendations();
+    return () => {
+      isActive = false; // cleanup
+    };
   }, []);
 
   return (
@@ -99,14 +112,14 @@ export default function ForYouPage() {
               <li key={book.id} className="flex flex-col gap-y-2">
                 <BookCard
                   book={{
-                    id: book.id,
-                    title: typeof book.title === "string" ? book.title : "",
-                    author: typeof book.author === "string" ? book.author : "",
-                    description: typeof book.description === "string" ? book.description : "",
+                    id: String(book.id),
+                    title: String(book.title),
+                    author: String(book.author),
+                    description: String(book.description),
                   }}
                 />
                 <p className="text-sm text-neutral-500 italic">
-                  {typeof book.reason === "string" ? book.reason : ""}
+                  {String(book.reason)}
                 </p>
               </li>
             ))}

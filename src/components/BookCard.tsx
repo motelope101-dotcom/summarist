@@ -8,8 +8,8 @@ type Book = {
 };
 
 type BookCardProps = {
-  book?: Book;       // shows book details 
-  loading?: boolean; // shows skeleton loader 
+  book?: Book;       // shows book 
+  loading?: boolean; // shows skeleton loader
 };
 
 export default function BookCard({ book, loading }: BookCardProps) {
@@ -27,20 +27,26 @@ export default function BookCard({ book, loading }: BookCardProps) {
     );
   }
 
-  // No book provided
+  // No book 
   if (!book) return null;
 
   // Normal card
   return (
     <Link
-      href={`/book/${book.id}`}
-      aria-label={`View details for ${book.title}`}
+      href={`/book/${String(book.id)}`}
+      aria-label={`View details for ${String(book.title ?? "")}`}
       className="bg-neutral-800 rounded-lg p-4 shadow hover:shadow-lg transition flex flex-col gap-y-4"
     >
       <article>
-        <h2 className="text-lg font-bold text-white">{book.title}</h2>
-        <p className="text-sm text-neutral-400">by {book.author}</p>
-        <p className="text-neutral-300 line-clamp-3">{book.description}</p>
+        <h2 className="text-lg font-bold text-white">
+          {String(book.title ?? "")}
+        </h2>
+        <p className="text-sm text-neutral-400">
+          by {String(book.author ?? "")}
+        </p>
+        <p className="text-neutral-300 line-clamp-3">
+          {String(book.description ?? "")}
+        </p>
       </article>
     </Link>
   );
