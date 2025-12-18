@@ -19,7 +19,7 @@ export const books: Book[] = [
     description:
     "An easy and proven way to build good habits and break bad ones.",
     coverUrl: "/covers/atomic-habits.jpg",
-    audioUrl: "/audio/atomic-habits.mp3",
+    audioUrl: "/audio/book-audio.mp3",
     duration: 3600,
     featured: true,
   },
@@ -29,7 +29,7 @@ export const books: Book[] = [
     author: "Cal Newport",
     description: "Rules for focused success in a distracted world.",
     coverUrl: "/covers/deep-work.jpg",
-    audioUrl: "/audio/deep-work.mp3",
+    audioUrl: "/audio/book-audio.mp3",
     duration: 4200,
   },
   {
@@ -39,7 +39,7 @@ export const books: Book[] = [
     description:
     "How today's entrepreneurs use continuous innovation to create radically successful businesses.",
     coverUrl: "/covers/lean-startup.jpg",
-    audioUrl: "/audio/lean-startup.mp3",
+    audioUrl: "/audio/book-audio.mp3",
     duration: 3900,
   },
   {
@@ -48,7 +48,7 @@ export const books: Book[] = [
     author: "Stephen R. Covey",
     description: "Powerful lessons in personal change.",
     coverUrl: "/covers/7-habits.jpg",
-    audioUrl: "/audio/7-habits.mp3",
+    audioUrl: "/audio/book-audio.mp3",
     duration: 4800,
   },
   {
@@ -57,7 +57,7 @@ export const books: Book[] = [
     author: "Daniel Kahneman",
     description: "Explores the two systems that drive the way we think.",
     coverUrl: "/covers/thinking-fast-slow.jpg",
-    audioUrl: "/audio/thinking-fast-slow.mp3",
+    audioUrl: "/audio/book-audio.mp3",
     duration: 5100,
   },
 ];
