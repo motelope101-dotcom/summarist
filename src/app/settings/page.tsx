@@ -28,7 +28,7 @@ export default function SettingsPage() {
     const loadUserData = async () => {
       if (!user) return;
       try {
-        const ref = doc(firestore, "users", user.uid);
+        const ref = doc(firestore, "user", user.uid);
         const snap = await getDoc(ref);
         if (snap.exists()) {
           const data = snap.data() as {
