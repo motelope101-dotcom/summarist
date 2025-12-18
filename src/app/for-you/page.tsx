@@ -33,38 +33,50 @@ export default function ForYouPage() {
       if (!user) return;
 
       try {
-        const userRef = doc(db, "user", user.uid); // matches my schema
-        const userSnap = await getDoc(userRef);
+        const userRef = doc(db, "user", user.uid);
+
+        // Swallow AbortError so it never surfaces as "Uncaught (in promise)"
+        const userSnap = await getDoc(userRef).catch((err: unknown) => {
+          if (err instanceof Error && err.name === "AbortError") return null;
+          throw err;
+        });
+
+        if (!userSnap) {
+          // Aborted — stop silently
+          return;
+        }
 
         if (userSnap.exists()) {
           const data = userSnap.data();
           const recs = (data.recommendations || []) as Recommendation[];
 
           const bookPromises = recs.map(async (rec) => {
-            try {
-              const bookRef = doc(db, "books", rec.bookId);
-              const bookSnap = await getDoc(bookRef);
+            const bookRef = doc(db, "books", rec.bookId);
 
-              if (bookSnap.exists()) {
-                const bookData = bookSnap.data() as Omit<Book, "id">;
-                return {
-                  id: bookSnap.id,
-                  title: bookData.title ?? "",
-                  author: bookData.author ?? "",
-                  description: bookData.description ?? "",
-                  reason: rec.reason ?? "",
-                };
-              }
-              return null;
-            } catch (err: unknown) {
-              if (err instanceof Error && err.name === "AbortError") {
-                // ignore aborted requests 
-                return null;
-              }
+            const bookSnap = await getDoc(bookRef).catch((err: unknown) => {
+              if (err instanceof Error && err.name === "AbortError") return null;
               throw err;
+            });
+
+            if (!bookSnap) {
+              // Aborted — ignore this item
+              return null;
             }
+
+            if (bookSnap.exists()) {
+              const bookData = bookSnap.data() as Omit<Book, "id">;
+              return {
+                id: bookSnap.id,
+                title: bookData.title ?? "",
+                author: bookData.author ?? "",
+                description: bookData.description ?? "",
+                reason: rec.reason ?? "",
+              };
+            }
+            return null;
           });
 
+          // Promise.all will not throw AbortError because each item swallows it
           const books = (await Promise.all(bookPromises)).filter(Boolean) as (Book & { reason: string })[];
           if (isActive) setRecommendedBooks(books);
         } else {
@@ -72,7 +84,7 @@ export default function ForYouPage() {
         }
       } catch (err: unknown) {
         if (err instanceof Error && err.name === "AbortError") {
-          // ignore aborted requests 
+          // Swallow AbortError at the outer level too
           return;
         }
         console.error("Error fetching recommendations:", err);
