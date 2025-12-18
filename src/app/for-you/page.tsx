@@ -4,14 +4,22 @@ import { useEffect, useState } from "react";
 import { db, auth } from "@/contexts/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import BookCard from "@/components/BookCard"; 
 
 interface Recommendation {
   bookId: string;
   reason: string;
 }
 
+interface Book {
+  id: string;
+  title: string;
+  author: string;
+  description: string;
+}
+
 export default function ForYouPage() {
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [recommendedBooks, setRecommendedBooks] = useState<(Book & { reason: string })[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,13 +32,32 @@ export default function ForYouPage() {
           return;
         }
 
+        // Get user doc
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
           const data = userSnap.data();
           const recs = (data.recommendations || []) as Recommendation[];
-          setRecommendations(recs);
+
+          // Join with books collection
+          const bookPromises = recs.map(async (rec) => {
+            const bookRef = doc(db, "books", rec.bookId);
+            const bookSnap = await getDoc(bookRef);
+
+            if (bookSnap.exists()) {
+              const bookData = bookSnap.data() as Omit<Book, "id">;
+              return {
+                ...bookData,
+                id: bookSnap.id,
+                reason: rec.reason,
+              };
+            }
+            return null;
+          });
+
+          const books = (await Promise.all(bookPromises)).filter(Boolean) as (Book & { reason: string })[];
+          setRecommendedBooks(books);
         } else {
           setError("User document not found.");
         }
@@ -54,33 +81,23 @@ export default function ForYouPage() {
         {loading && (
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
             {[...Array(4)].map((_, i) => (
-              <div
-                key={i}
-                className="bg-neutral-800 p-4 rounded-lg animate-pulse h-32"
-              />
+              <BookCard key={i} loading />
             ))}
           </div>
         )}
 
         {error && <p className="mt-2 text-red-500 text-sm">{error}</p>}
 
-        {!loading && !error && recommendations.length === 0 && (
-          <p className="mt-2 text-neutral-300 text-sm">
-            No recommendations yet.
-          </p>
+        {!loading && !error && recommendedBooks.length === 0 && (
+          <p className="mt-2 text-neutral-300 text-sm">No recommendations yet.</p>
         )}
 
-        {!loading && !error && recommendations.length > 0 && (
+        {!loading && !error && recommendedBooks.length > 0 && (
           <ul className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
-            {recommendations.map((rec, index) => (
-              <li
-                key={index}
-                className="bg-neutral-800 p-4 rounded-lg shadow hover:shadow-lg transition"
-              >
-                <h2 className="text-lg font-semibold text-white">
-                  {rec.bookId}
-                </h2>
-                <p className="text-neutral-400">{rec.reason}</p>
+            {recommendedBooks.map((book) => (
+              <li key={book.id} className="flex flex-col gap-y-2">
+                <BookCard book={book} />
+                <p className="text-sm text-neutral-500 italic">{book.reason}</p>
               </li>
             ))}
           </ul>

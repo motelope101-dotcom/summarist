@@ -8,8 +8,8 @@ type Book = {
 };
 
 type BookCardProps = {
-  book?: Book;       // shows book details when provided
-  loading?: boolean; // shows skeleton loader when waiting
+  book?: Book;       // shows book details 
+  loading?: boolean; // shows skeleton loader 
 };
 
 export default function BookCard({ book, loading }: BookCardProps) {
