@@ -6,7 +6,7 @@ import { auth, db } from "@/contexts/firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
 
 type AudioPlayerProps = {
-  audioUrl: string;
+  audioUrl?: string;   
   bookId: string;
 };
 
@@ -56,13 +56,15 @@ export default function AudioPlayer({ audioUrl, bookId }: AudioPlayerProps) {
     <div className="flex flex-col items-center gap-4 w-full">
       <audio
         ref={audioRef}
-        src={audioUrl}
+        src={audioUrl || "/audio/Recording.mp3"}  
         preload="auto"
         onPause={() => setIsPlaying(false)}
         onEnded={() => setIsPlaying(false)}
         onPlay={() => setIsPlaying(true)}
         onTimeUpdate={handleProgress}
-        onError={() => console.error("Audio failed to load")}
+        onError={() =>
+          console.error(`Audio failed to load for book ${bookId}`)
+        }
       />
       <button
         onClick={togglePlay}

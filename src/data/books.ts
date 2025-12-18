@@ -17,9 +17,9 @@ export const books: Book[] = [
     title: "Atomic Habits",
     author: "James Clear",
     description:
-    "An easy and proven way to build good habits and break bad ones.",
+      "An easy and proven way to build good habits and break bad ones.",
     coverUrl: "/covers/atomic-habits.jpg",
-    audioUrl: "/audio/Recording.mp3",
+    audioUrl: "/audio/Recording.mp3",   
     duration: 3600,
     featured: true,
   },
@@ -37,7 +37,7 @@ export const books: Book[] = [
     title: "The Lean Startup",
     author: "Eric Ries",
     description:
-    "How today's entrepreneurs use continuous innovation to create radically successful businesses.",
+      "How today's entrepreneurs use continuous innovation to create radically successful businesses.",
     coverUrl: "/covers/lean-startup.jpg",
     audioUrl: "/audio/Recording.mp3",
     duration: 3900,
