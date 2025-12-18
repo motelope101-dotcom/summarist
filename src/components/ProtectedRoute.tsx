@@ -13,8 +13,18 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const router = useRouter();
 
   useEffect(() => {
+    // Only redirects once auth state is resolved
     if (!loading && !user) {
-      router.replace("/auth/login");
+      try {
+        router.replace("/auth/login");
+      } catch (err) {
+        // swallows navigation errors silently
+        if (err instanceof Error && err.name === "AbortError") {
+          // ignore aborted navigation
+        } else {
+          console.error("Navigation error:", err);
+        }
+      }
     }
   }, [user, loading, router]);
 

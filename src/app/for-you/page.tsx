@@ -33,7 +33,7 @@ export default function ForYouPage() {
       if (!user) return;
 
       try {
-        const userRef = doc(db, "user", user.uid); // matches my Firestore
+        const userRef = doc(db, "user", user.uid); // matches my schema
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
@@ -48,17 +48,18 @@ export default function ForYouPage() {
               if (bookSnap.exists()) {
                 const bookData = bookSnap.data() as Omit<Book, "id">;
                 return {
-                  id: String(bookSnap.id),
-                  title: String(bookData.title ?? ""),
-                  author: String(bookData.author ?? ""),
-                  description: String(bookData.description ?? ""),
-                  reason: String(rec.reason ?? ""),
+                  id: bookSnap.id,
+                  title: bookData.title ?? "",
+                  author: bookData.author ?? "",
+                  description: bookData.description ?? "",
+                  reason: rec.reason ?? "",
                 };
               }
               return null;
             } catch (err: unknown) {
               if (err instanceof Error && err.name === "AbortError") {
-                return null; // ignores aborted requests
+                // ignore aborted requests 
+                return null;
               }
               throw err;
             }
@@ -71,7 +72,8 @@ export default function ForYouPage() {
         }
       } catch (err: unknown) {
         if (err instanceof Error && err.name === "AbortError") {
-          return; // ignores aborted requests
+          // ignore aborted requests 
+          return;
         }
         console.error("Error fetching recommendations:", err);
         if (isActive) setError("Failed to load recommendations. Please try again later.");
@@ -117,13 +119,13 @@ export default function ForYouPage() {
               <li key={book.id} className="flex flex-col gap-y-2">
                 <BookCard
                   book={{
-                    id: String(book.id),
-                    title: String(book.title),
-                    author: String(book.author),
-                    description: String(book.description),
+                    id: book.id,
+                    title: book.title,
+                    author: book.author,
+                    description: book.description,
                   }}
                 />
-                <p className="text-sm text-neutral-500 italic">{String(book.reason)}</p>
+                <p className="text-sm text-neutral-500 italic">{book.reason}</p>
               </li>
             ))}
           </ul>
