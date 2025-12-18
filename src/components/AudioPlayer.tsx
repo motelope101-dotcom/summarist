@@ -61,7 +61,7 @@ export default function AudioPlayer({ audioUrl, bookId }: AudioPlayerProps) {
     <div className="flex flex-col items-center gap-4 w-full">
       <audio
         ref={audioRef}
-        src={audioUrl} // only use Firestore-provided URL
+        src={audioUrl} // Firestore-URL
         preload="auto"
         onPause={() => setIsPlaying(false)}
         onEnded={() => setIsPlaying(false)}
