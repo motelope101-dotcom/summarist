@@ -18,7 +18,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
       try {
         router.replace("/auth/login");
       } catch (err) {
-        // swallows navigation errors silently
+        // swallow navigation errors silently
         if (err instanceof Error && err.name === "AbortError") {
           // ignore aborted navigation
         } else {
@@ -31,7 +31,10 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-[#0a0a0f]">
-        <p className="text-neutral-300">Loading...</p>
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <p className="text-neutral-300 text-sm">Loading your session…</p>
+        </div>
       </div>
     );
   }

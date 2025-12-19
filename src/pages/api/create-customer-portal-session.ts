@@ -11,6 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const { stripeCustomerId } = req.query;
+
     if (!stripeCustomerId || typeof stripeCustomerId !== "string") {
       return res.status(400).json({ error: "Missing or invalid stripeCustomerId" });
     }
@@ -22,6 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return_url: `${origin}/settings`,
     });
 
+    // Redirect user to Stripe's customer portal
     return res.redirect(303, portalSession.url);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Internal Server Error";

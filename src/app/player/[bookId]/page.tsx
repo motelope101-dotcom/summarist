@@ -37,7 +37,6 @@ export default function PlayerPage() {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = { id: docSnap.id, ...(docSnap.data() as Omit<Book, "id">) };
-          console.log("Fetched book data:", data);
           setBook(data);
         } else {
           setError("Book not found.");
@@ -55,7 +54,7 @@ export default function PlayerPage() {
   if (loading) {
     return (
       <ProtectedRoute>
-        <section className="p-8 flex flex-col items-center min-h-[60vh] bg-[#0a0a0f]">
+        <section className="px-6 py-8 flex flex-col items-center min-h-[60vh] bg-[#0a0a0f]">
           <p className="text-neutral-300">Loading book…</p>
         </section>
       </ProtectedRoute>
@@ -65,7 +64,7 @@ export default function PlayerPage() {
   if (error) {
     return (
       <ProtectedRoute>
-        <section className="p-8 flex flex-col items-center min-h-[60vh] bg-[#0a0a0f]">
+        <section className="px-6 py-8 flex flex-col items-center min-h-[60vh] bg-[#0a0a0f]">
           <p className="text-red-500 mt-4">{error}</p>
         </section>
       </ProtectedRoute>
@@ -75,25 +74,23 @@ export default function PlayerPage() {
   if (!book) {
     return (
       <ProtectedRoute>
-        <section className="p-8 flex flex-col items-center min-h-[60vh] bg-[#0a0a0f]">
+        <section className="px-6 py-8 flex flex-col items-center min-h-[60vh] bg-[#0a0a0f]">
           <p className="text-neutral-300">Book not found.</p>
         </section>
       </ProtectedRoute>
     );
   }
 
-  console.log("Audio URL being passed:", book.audioUrl);
-
   return (
     <ProtectedRoute>
-      <section className="p-8 flex flex-col items-center min-h-[60vh] bg-[#0a0a0f]">
+      <section className="px-6 py-8 flex flex-col items-center min-h-[60vh] bg-[#0a0a0f]">
         {book.coverUrl && (
           <Image
             src={book.coverUrl}
             alt={book.title}
             width={160}
             height={224}
-            className="rounded object-cover mb-4"
+            className="rounded object-cover mb-6 shadow-lg"
           />
         )}
         <h1 className="text-3xl font-bold text-white">{book.title}</h1>
@@ -102,7 +99,6 @@ export default function PlayerPage() {
           {book.description}
         </p>
 
-        {/* Audio player */}
         <div className="mt-8 w-full max-w-xl">
           {book.audioUrl ? (
             <AudioPlayer

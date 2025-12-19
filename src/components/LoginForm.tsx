@@ -33,8 +33,8 @@ export default function LoginForm() {
   };
 
   return (
-    <section className="flex min-h-[60vh] flex-col items-center justify-center p-8 bg-[#0a0a0f]">
-      <h1 className="text-3xl font-bold text-white">Login</h1>
+    <section className="flex min-h-[60vh] flex-col items-center justify-center px-6 py-8 bg-[#0a0a0f]">
+      <h1 className="text-3xl font-bold text-white mb-2">Login</h1>
       <form
         onSubmit={handleSubmit}
         aria-label="Login form"
@@ -46,7 +46,7 @@ export default function LoginForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          className="px-3 py-2 rounded bg-neutral-700 text-white placeholder-neutral-400 focus:outline-none"
+          className="px-3 py-2 rounded bg-neutral-700 text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           required
         />
         <input
@@ -55,15 +55,17 @@ export default function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
-          className="px-3 py-2 rounded bg-neutral-700 text-white placeholder-neutral-400 focus:outline-none"
+          className="px-3 py-2 rounded bg-neutral-700 text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           required
         />
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && (
+          <p className="text-red-500 text-sm text-center">{error}</p>
+        )}
         <button
           type="submit"
           disabled={loading}
           aria-label="Log In"
-          className="bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded transition disabled:opacity-50"
+          className="bg-indigo-600 hover:bg-indigo-500 hover:shadow-lg hover:scale-[1.02] text-white px-4 py-2 rounded transition disabled:opacity-50"
         >
           {loading ? "Logging in..." : "Log In"}
         </button>

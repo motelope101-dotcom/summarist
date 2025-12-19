@@ -4,7 +4,7 @@ import { firestore } from "@/contexts/firebase-admin";
 import { Readable } from "stream";
 
 export const config = {
-  api: { bodyParser: false },
+  api: { bodyParser: false }, // Stripe signature verification
 };
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -35,7 +35,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       process.env.STRIPE_WEBHOOK_SECRET!
     );
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Webhook signature verification failed";
+    const message =
+      err instanceof Error ? err.message : "Webhook signature verification failed";
     console.error("Webhook signature error:", message);
     return res.status(400).send(`Webhook Error: ${message}`);
   }

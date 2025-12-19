@@ -27,7 +27,7 @@ export default function SignupPage() {
 
     try {
       await signup(email, password);
-      router.push("/home"); 
+      router.push("/home");
     } catch (err) {
       console.error("Signup error:", err);
       setError((err as Error).message || "Unable to create account. Try again.");
@@ -37,7 +37,7 @@ export default function SignupPage() {
   };
 
   return (
-    <section className="flex min-h-[60vh] flex-col items-center justify-center p-8 bg-[#816678]">
+    <section className="flex min-h-[60vh] flex-col items-center justify-center px-6 py-8 bg-[#0a0a0f]">
       <h1 className="text-3xl font-bold text-white">Sign Up</h1>
       <form
         onSubmit={handleSubmit}
@@ -49,7 +49,7 @@ export default function SignupPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          className="px-3 py-2 rounded bg-neutral-700 text-white"
+          className="px-3 py-2 rounded bg-neutral-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
           required
         />
         <input
@@ -58,15 +58,17 @@ export default function SignupPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
-          className="px-3 py-2 rounded bg-neutral-700 text-white"
+          className="px-3 py-2 rounded bg-neutral-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
           required
         />
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && (
+          <p className="text-red-500 text-sm text-center">{error}</p>
+        )}
         <button
           type="submit"
           disabled={loading}
           aria-label="Sign Up"
-          className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded transition disabled:opacity-50"
+          className="bg-indigo-600 hover:bg-indigo-500 hover:shadow-lg hover:scale-[1.02] text-white px-4 py-2 rounded transition disabled:opacity-50"
         >
           {loading ? "Signing up..." : "Sign Up"}
         </button>

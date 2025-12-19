@@ -59,24 +59,28 @@ export default function LibraryPage() {
 
   return (
     <ProtectedRoute>
-      <div className="p-8 bg-[#0a0a0f] min-h-screen">
-        <h2 className="text-xl font-semibold flex items-center gap-2 mb-4 text-white">
-          <BookOpenIcon className="h-5 w-5 flex-shrink-0 text-indigo-400" />
+      <div className="px-6 py-8 bg-[#0a0a0f] min-h-screen">
+        <h2 className="text-2xl font-semibold flex items-center gap-2 mb-6 text-white">
+          <BookOpenIcon className="h-6 w-6 flex-shrink-0 text-indigo-400" />
           Your Library
         </h2>
 
         <SearchBar onSearch={fetchBooks} aria-label="Search library" />
 
-        <section className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <section className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {loading &&
-            Array.from({ length: 6 }).map((_, i) => (
+            Array.from({ length: 8 }).map((_, i) => (
               <BookCard key={i} loading />
             ))}
 
-          {error && <p className="text-red-500">{error}</p>}
+          {error && (
+            <p className="text-red-500 text-center mt-4">{error}</p>
+          )}
 
           {!loading && !error && books.length === 0 && (
-            <p className="text-neutral-400">No results found.</p>
+            <p className="text-neutral-400 text-center mt-4">
+              No results found.
+            </p>
           )}
 
           {!loading &&

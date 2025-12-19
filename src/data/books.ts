@@ -19,7 +19,7 @@ export const books: Book[] = [
     description:
       "An easy and proven way to build good habits and break bad ones.",
     coverUrl: "/covers/atomic-habits.jpg",
-    audioUrl: "/audio/Recording.mp3",   
+    audioUrl: "/audio/Recording.mp3",
     duration: 3600,
     featured: true,
   },

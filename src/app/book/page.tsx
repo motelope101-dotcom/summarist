@@ -23,7 +23,7 @@ export default function BookPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let isActive = true; // cleanup 
+    let isActive = true;
 
     const fetchBook = async () => {
       if (!bookId) {
@@ -59,7 +59,7 @@ export default function BookPage() {
 
     fetchBook();
     return () => {
-      isActive = false; // cleanup 
+      isActive = false;
     };
   }, [bookId]);
 
@@ -68,14 +68,14 @@ export default function BookPage() {
   if (!book) return <p className="text-neutral-300 p-8">Book not found.</p>;
 
   return (
-    <section className="p-8 flex flex-col items-center text-white">
+    <section className="px-6 py-8 flex flex-col items-center text-white bg-[#0a0a0f] min-h-screen">
       {book.coverUrl ? (
         <Image
           src={book.coverUrl}
           alt={String(book.title ?? "Book cover")}
           width={192}
           height={288}
-          className="object-cover rounded shadow mb-6"
+          className="object-cover rounded shadow-lg mb-6"
         />
       ) : (
         <div className="w-[192px] h-[288px] bg-neutral-700 rounded shadow mb-6 flex items-center justify-center text-neutral-400">
@@ -83,13 +83,15 @@ export default function BookPage() {
         </div>
       )}
 
-      <h1 className="text-3xl font-bold">{String(book.title)}</h1>
+      <h1 className="text-3xl font-bold mb-2">{String(book.title)}</h1>
       <h2 className="text-lg text-neutral-400">by {String(book.author)}</h2>
-      <p className="mt-4 max-w-xl text-center">{String(book.description)}</p>
+      <p className="mt-4 max-w-xl text-center text-neutral-300">
+        {String(book.description)}
+      </p>
 
       <Link
         href={`/player/${book.id}`}
-        className="mt-6 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded transition"
+        className="mt-6 bg-indigo-600 hover:bg-indigo-500 hover:shadow-lg hover:scale-[1.02] text-white px-4 py-2 rounded transition"
       >
         Listen Now
       </Link>

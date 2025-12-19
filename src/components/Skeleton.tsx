@@ -10,7 +10,7 @@ export default function Skeleton({ className = "" }: SkeletonProps) {
   return (
     <div
       aria-hidden="true"
-      className={`animate-pulse rounded bg-neutral-700 ${className}`}
+      className={`animate-pulse rounded-lg bg-neutral-700/80 ${className}`}
     />
   );
 }

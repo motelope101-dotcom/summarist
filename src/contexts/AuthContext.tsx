@@ -30,7 +30,7 @@ const firebaseConfig = {
 // Initialize Firebase app once
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 
-// create auth instance in browser
+// Create auth instance in browser
 const auth = typeof window !== "undefined" ? getAuth(app) : null;
 
 type AuthContextType = {
@@ -64,22 +64,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signup = async (email: string, password: string) => {
     if (!auth) return null;
-    const cred = await createUserWithEmailAndPassword(auth, email, password);
-    setUser(cred.user);
-    return cred.user;
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      setUser(cred.user);
+      return cred.user;
+    } catch (err) {
+      console.error("Signup error:", err);
+      throw err;
+    }
   };
 
   const login = async (email: string, password: string) => {
     if (!auth) return null;
-    const cred = await signInWithEmailAndPassword(auth, email, password);
-    setUser(cred.user);
-    return cred.user;
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      setUser(cred.user);
+      return cred.user;
+    } catch (err) {
+      console.error("Login error:", err);
+      throw err;
+    }
   };
 
   const logout = async () => {
     if (!auth) return;
-    await signOut(auth);
-    setUser(null);
+    try {
+      await signOut(auth);
+      setUser(null);
+    } catch (err) {
+      console.error("Logout error:", err);
+      throw err;
+    }
   };
 
   return (

@@ -24,7 +24,7 @@ export default function BookDetailPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let isActive = true; // cleanup 
+    let isActive = true;
 
     const fetchBook = async () => {
       if (!id) {
@@ -61,7 +61,7 @@ export default function BookDetailPage() {
 
     fetchBook();
     return () => {
-      isActive = false; // cleanup
+      isActive = false;
     };
   }, [id]);
 
@@ -70,17 +70,14 @@ export default function BookDetailPage() {
   if (!book) return <p className="text-neutral-300 p-8">Book not found.</p>;
 
   return (
-    <section className="p-8 bg-[#0a0a0f] min-h-screen">
-      <h1 className="text-3xl font-bold text-white mb-2">{String(book.title)}</h1>
-      <p className="text-neutral-300 mb-4">by {String(book.author)}</p>
-
+    <section className="px-6 py-8 bg-[#0a0a0f] min-h-screen flex flex-col items-center">
       {book.coverUrl ? (
         <Image
           src={book.coverUrl}
           alt={String(book.title ?? "Book cover")}
           width={192}
           height={288}
-          className="object-cover rounded shadow mb-6"
+          className="object-cover rounded shadow-lg mb-6"
         />
       ) : (
         <div className="w-[192px] h-[288px] bg-neutral-700 rounded shadow mb-6 flex items-center justify-center text-neutral-400">
@@ -88,7 +85,11 @@ export default function BookDetailPage() {
         </div>
       )}
 
-      <p className="text-neutral-200 mb-6">{String(book.description)}</p>
+      <h1 className="text-3xl font-bold text-white mb-2">{String(book.title)}</h1>
+      <p className="text-neutral-400 mb-4">by {String(book.author)}</p>
+      <p className="text-neutral-300 max-w-xl text-center mb-6">
+        {String(book.description)}
+      </p>
 
       {book.audioUrl ? (
         <AudioPlayer

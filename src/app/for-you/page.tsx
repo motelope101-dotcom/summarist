@@ -83,26 +83,26 @@ export default function ForYouPage() {
 
   return (
     <ProtectedRoute>
-      <section className="flex min-h-[60vh] flex-col items-center justify-center p-8 bg-[#0a0a0f]">
-        <h1 className="text-3xl font-bold text-white">For You</h1>
-        <p className="mt-4 text-neutral-300">Personalized recommendations.</p>
+      <section className="flex min-h-[60vh] flex-col items-center justify-center px-6 py-8 bg-[#0a0a0f]">
+        <h1 className="text-3xl font-bold text-white mb-2">For You</h1>
+        <p className="text-neutral-300 mb-6">Personalized recommendations.</p>
 
         {(authLoading || loading) && (
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
-            {[...Array(4)].map((_, i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
+            {[...Array(6)].map((_, i) => (
               <BookCard key={i} loading />
             ))}
           </div>
         )}
 
-        {error && <p className="mt-2 text-red-500 text-sm">{error}</p>}
+        {error && <p className="mt-4 text-red-500 text-sm text-center">{error}</p>}
 
         {!authLoading && !loading && !error && recommendedBooks.length === 0 && (
-          <p className="mt-2 text-neutral-300 text-sm">No recommendations yet.</p>
+          <p className="mt-4 text-neutral-400 text-sm text-center">No recommendations yet.</p>
         )}
 
         {!authLoading && !loading && !error && recommendedBooks.length > 0 && (
-          <ul className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
             {recommendedBooks.map((book) => (
               <li key={book.id} className="flex flex-col gap-y-2">
                 <BookCard

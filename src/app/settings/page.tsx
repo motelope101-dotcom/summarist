@@ -77,9 +77,9 @@ export default function SettingsPage() {
 
   return (
     <ProtectedRoute>
-      <section className="flex min-h-[60vh] flex-col items-center justify-center p-8 bg-[#0a0a0f]">
-        <h1 className="text-3xl font-bold text-white">Settings</h1>
-        <p className="mt-4 text-neutral-300">
+      <section className="flex min-h-[60vh] flex-col items-center justify-center px-6 py-8 bg-[#0a0a0f]">
+        <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
+        <p className="text-neutral-300 mb-6">
           Update your account details, profile, and subscription here.
         </p>
 
@@ -91,7 +91,7 @@ export default function SettingsPage() {
           </p>
           <button
             onClick={handleLogout}
-            className="mt-4 bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded transition"
+            className="mt-4 bg-purple-700 hover:bg-purple-600 hover:shadow-lg hover:scale-[1.02] text-white px-4 py-2 rounded transition"
           >
             Log Out
           </button>
@@ -105,14 +105,14 @@ export default function SettingsPage() {
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
             placeholder="Display Name"
-            className="mt-2 w-full px-3 py-2 rounded bg-neutral-700 text-white placeholder-neutral-500 outline-none"
+            className="mt-2 w-full px-3 py-2 rounded bg-neutral-700 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           <input
             type="text"
             value={avatarUrl}
             onChange={(e) => setAvatarUrl(e.target.value)}
             placeholder="Avatar URL"
-            className="mt-2 w-full px-3 py-2 rounded bg-neutral-700 text-white placeholder-neutral-500 outline-none"
+            className="mt-2 w-full px-3 py-2 rounded bg-neutral-700 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           {avatarUrl && (
             <Image
@@ -120,12 +120,12 @@ export default function SettingsPage() {
               alt="User avatar"
               width={64}
               height={64}
-              className="rounded-full object-cover mx-auto mt-4"
+              className="rounded-full object-cover mx-auto mt-4 shadow-lg"
             />
           )}
           <button
             onClick={handleSaveProfile}
-            className="mt-4 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded transition"
+            className="mt-4 bg-indigo-600 hover:bg-indigo-500 hover:shadow-lg hover:scale-[1.02] text-white px-4 py-2 rounded transition"
           >
             Save Profile
           </button>
@@ -139,7 +139,7 @@ export default function SettingsPage() {
           </p>
           <button
             onClick={handlePasswordReset}
-            className="mt-4 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded transition"
+            className="mt-4 bg-red-600 hover:bg-red-500 hover:shadow-lg hover:scale-[1.02] text-white px-4 py-2 rounded transition"
           >
             Reset Password
           </button>
@@ -166,7 +166,7 @@ export default function SettingsPage() {
           )}
           <Link
             href="/api/create-customer-portal-session"
-            className="mt-4 inline-block bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded transition"
+            className="mt-4 inline-block bg-indigo-600 hover:bg-indigo-500 hover:shadow-lg hover:scale-[1.02] text-white px-4 py-2 rounded transition"
           >
             Manage Subscription
           </Link>

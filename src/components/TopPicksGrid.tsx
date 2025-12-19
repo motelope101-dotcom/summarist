@@ -46,16 +46,16 @@ export default function TopPicksGrid() {
   }, []);
 
   return (
-    <section className="mt-6">
-      <h2 className="text-xl font-semibold text-white mb-4">Top Picks</h2>
+    <section className="mt-8 px-6">
+      <h2 className="text-2xl font-bold text-white mb-6">Top Picks</h2>
 
       {loading && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="flex flex-col gap-y-3" aria-hidden="true">
-              <Skeleton className="h-[220px] w-[150px]" />
-              <Skeleton className="h-6 w-3/4" />
-              <Skeleton className="h-4 w-1/2" />
+              <Skeleton className="h-[220px] w-[150px] mx-auto" />
+              <Skeleton className="h-6 w-3/4 mx-auto" />
+              <Skeleton className="h-4 w-1/2 mx-auto" />
             </div>
           ))}
         </div>
@@ -70,19 +70,22 @@ export default function TopPicksGrid() {
           {books.map((book) => (
             <div
               key={book.id}
-              className="bg-neutral-800 rounded-lg p-4 shadow hover:shadow-lg transition flex flex-col items-center"
+              className="bg-neutral-800 rounded-lg p-4 shadow hover:shadow-lg hover:scale-[1.02] transition flex flex-col items-center text-center"
             >
               <Image
                 src={book.coverUrl}
                 alt={`Cover of ${book.title}`}
                 width={150}
                 height={220}
-                className="rounded mb-3 object-cover"
+                className="rounded shadow mb-3 object-cover"
               />
-              <h3 className="text-lg font-bold text-white text-center">
-                {book.title}
-              </h3>
-              <p className="text-sm text-neutral-400 text-center">by {book.author}</p>
+              <h3 className="text-lg font-semibold text-white">{book.title}</h3>
+              <p className="text-sm text-neutral-400 mb-2">by {book.author}</p>
+              {book.description && (
+                <p className="text-neutral-300 text-sm line-clamp-2 max-w-xs">
+                  {book.description}
+                </p>
+              )}
             </div>
           ))}
         </div>

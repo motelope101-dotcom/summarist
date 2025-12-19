@@ -17,7 +17,7 @@ export default function BookCard({ book, loading }: BookCardProps) {
   if (loading) {
     return (
       <article
-        className="animate-pulse bg-neutral-800 rounded-lg p-4 shadow flex flex-col gap-y-3"
+        className="animate-pulse bg-neutral-800 rounded-lg p-6 shadow flex flex-col gap-y-4"
         aria-hidden="true"
       >
         <div className="bg-neutral-700 h-6 w-3/4 rounded"></div>
@@ -27,7 +27,7 @@ export default function BookCard({ book, loading }: BookCardProps) {
     );
   }
 
-  // No book 
+  // No book
   if (!book) return null;
 
   // Normal card
@@ -35,10 +35,10 @@ export default function BookCard({ book, loading }: BookCardProps) {
     <Link
       href={`/book/${String(book.id ?? "")}`}
       aria-label={`View details for ${String(book.title ?? "")}`}
-      className="bg-neutral-800 rounded-lg p-4 shadow hover:shadow-lg transition flex flex-col gap-y-4"
+      className="bg-neutral-800 rounded-lg p-6 shadow hover:shadow-xl hover:scale-[1.02] transition-transform flex flex-col gap-y-4"
     >
       <article>
-        <h2 className="text-lg font-bold text-white">
+        <h2 className="text-xl font-bold text-white">
           {String(book.title ?? "")}
         </h2>
         <p className="text-sm text-neutral-400">

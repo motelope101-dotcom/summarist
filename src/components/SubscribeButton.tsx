@@ -52,16 +52,18 @@ export default function SubscribeButton({ uid, email }: Props) {
   };
 
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex flex-col items-center gap-3">
       <button
         onClick={handleSubscribe}
         disabled={loading}
         aria-label="Subscribe to premium plan"
-        className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded transition disabled:opacity-50"
+        className="bg-indigo-600 hover:bg-indigo-500 hover:shadow-lg hover:scale-[1.02] text-white px-6 py-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? "Redirecting…" : "Subscribe Now"}
       </button>
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      {error && (
+        <p className="text-sm text-red-500 text-center max-w-sm">{error}</p>
+      )}
     </div>
   );
 }

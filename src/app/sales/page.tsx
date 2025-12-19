@@ -46,31 +46,33 @@ export default function SalesPage() {
 
   return (
     <ProtectedRoute>
-      <section className="flex min-h-[60vh] flex-col items-center justify-center text-center p-8 bg-[#0a0a0f]">
-        <h1 className="text-3xl font-bold text-white">Sales</h1>
-        <p className="mt-4 text-neutral-300 max-w-lg">
+      <section className="flex min-h-[60vh] flex-col items-center justify-center text-center px-6 py-8 bg-[#0a0a0f]">
+        <h1 className="text-3xl font-bold text-white mb-2">Sales</h1>
+        <p className="text-neutral-300 max-w-lg mb-6">
           Unlock unlimited summaries, audio playback, and personalized recommendations.
         </p>
 
-        <ul className="mt-4 text-neutral-300 text-sm space-y-2">
-          <li> Unlimited book summaries</li>
-          <li> Audio playback with progress tracking</li>
-          <li> Personalized recommendations</li>
+        <ul className="text-neutral-300 text-sm space-y-2 mb-6">
+          <li>Unlimited book summaries</li>
+          <li>Audio playback with progress tracking</li>
+          <li>Personalized recommendations</li>
         </ul>
 
         {user && (
-          <p className="mt-2 text-neutral-300 text-sm">
+          <p className="text-neutral-400 text-sm mb-4">
             Signed in as <span className="font-mono">{user.email}</span>
           </p>
         )}
 
-        {error && <p className="mt-4 text-red-500 text-sm">{error}</p>}
+        {error && (
+          <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
+        )}
 
         <button
           onClick={handleCheckout}
           disabled={loading}
           aria-label="Subscribe with Stripe"
-          className="mt-6 bg-purple-700 hover:bg-purple-600 text-white px-6 py-3 rounded-lg shadow transition disabled:opacity-50"
+          className="bg-indigo-600 hover:bg-indigo-500 hover:shadow-lg hover:scale-[1.02] text-white px-6 py-3 rounded-lg transition disabled:opacity-50"
         >
           {loading ? "Redirecting…" : "Subscribe with Stripe"}
         </button>

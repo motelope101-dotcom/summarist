@@ -47,33 +47,33 @@ export default function FeaturedBook() {
   }, []);
 
   if (loading) {
-    return <p className="text-neutral-400">Loading featured book...</p>;
+    return <p className="text-neutral-400 px-6 py-4">Loading featured book…</p>;
   }
 
   if (!book) {
-    return <p className="text-neutral-400">No featured book available.</p>;
+    return <p className="text-neutral-400 px-6 py-4">No featured book available.</p>;
   }
 
   return (
-    <section className="mt-6 bg-neutral-800 rounded-lg p-6 shadow flex flex-col items-center text-center">
-      <h2 className="text-xl font-semibold text-white mb-4">Featured Book</h2>
+    <section className="mt-8 bg-neutral-800 rounded-lg p-6 shadow flex flex-col items-center text-center">
+      <h2 className="text-2xl font-bold text-white mb-6">Featured Book</h2>
       <Image
         src={book.coverUrl}
         alt={`Cover of ${book.title}`}
         width={200}
         height={300}
         priority
-        className="rounded mb-4 object-cover"
+        className="rounded shadow-lg mb-6 object-cover"
       />
-      <h3 className="text-lg font-bold text-white">{book.title}</h3>
-      <p className="text-sm text-neutral-400 mb-2">by {book.author}</p>
+      <h3 className="text-lg font-semibold text-white">{book.title}</h3>
+      <p className="text-sm text-neutral-400 mb-4">by {book.author}</p>
       {book.description && (
-        <p className="text-neutral-300 line-clamp-3 mb-4">{book.description}</p>
+        <p className="text-neutral-300 line-clamp-3 mb-6 max-w-md">{book.description}</p>
       )}
       <button
         onClick={() => router.push(`/player/${book.id}`)}
         aria-label={`Start listening to ${book.title}`}
-        className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded transition"
+        className="bg-indigo-600 hover:bg-indigo-500 hover:shadow-lg hover:scale-[1.02] text-white px-6 py-2 rounded transition"
       >
         Start Listening
       </button>

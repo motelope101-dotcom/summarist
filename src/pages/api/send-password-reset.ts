@@ -12,14 +12,11 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
 };
 
-// Ensures Firebase app is initialized 
+// Ensure Firebase app is initialized
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -35,8 +32,7 @@ export default async function handler(
     await sendPasswordResetEmail(auth, email);
     return res.status(200).json({ message: "Password reset email sent" });
   } catch (err: unknown) {
-    const message =
-      err instanceof Error ? err.message : "Internal Server Error";
+    const message = err instanceof Error ? err.message : "Internal Server Error";
     console.error("Password reset error:", message);
     return res.status(500).json({ error: message });
   }

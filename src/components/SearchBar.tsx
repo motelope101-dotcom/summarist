@@ -20,7 +20,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
     <form
       onSubmit={handleSubmit}
       aria-label="Search form"
-      className="flex items-center gap-2 bg-neutral-800 rounded px-3 py-2 w-full max-w-md"
+      className="flex items-center gap-3 bg-neutral-800 rounded-lg px-4 py-2 w-full max-w-md shadow transition focus-within:ring-2 focus-within:ring-indigo-500"
     >
       <MagnifyingGlassIcon
         className="h-5 w-5 flex-shrink-0 text-neutral-400"
@@ -32,12 +32,13 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
         value={term}
         onChange={(e) => setTerm(e.target.value)}
         placeholder="Search books..."
-        className="flex-1 bg-transparent text-white placeholder-neutral-500 outline-none"
+        className="flex-1 bg-transparent text-white placeholder-neutral-500 outline-none focus:ring-0"
       />
       <button
         type="submit"
         aria-label="Submit search"
-        className="bg-purple-700 hover:bg-purple-600 text-white px-3 py-1 rounded transition"
+        className="bg-indigo-600 hover:bg-indigo-500 hover:shadow-lg hover:scale-[1.02] text-white px-4 py-1.5 rounded transition disabled:opacity-50"
+        disabled={!term.trim()}
       >
         Search
       </button>

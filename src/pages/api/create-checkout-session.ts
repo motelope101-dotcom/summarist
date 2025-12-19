@@ -16,6 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const { uid, email } = req.body as CheckoutRequestBody;
+
     if (!uid || !email) {
       return res.status(400).json({ error: "Missing required parameters" });
     }

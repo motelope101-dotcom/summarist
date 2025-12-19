@@ -25,16 +25,16 @@ import { books } from "@/data/books";
     books.forEach((book) => {
       const docRef = col.doc(book.id);
       batch.set(docRef, book);
-      console.log("Seeded book:", book.title);
+      console.log(`Seeded book: ${book.title}`);
     });
     await batch.commit();
 
     console.log(
       "Reset complete: cleared and reseeded 'books' collection with real data"
     );
+    process.exit(0);
   } catch (err: unknown) {
-    const message =
-      err instanceof Error ? err.message : "Unknown error occurred";
+    const message = err instanceof Error ? err.message : "Unknown error occurred";
     console.error("Error resetting books:", message);
     process.exit(1);
   }
