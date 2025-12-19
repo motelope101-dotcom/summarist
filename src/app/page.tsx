@@ -61,22 +61,22 @@ export default function HomePage() {
 
   return (
     <ProtectedRoute>
-      <main className="min-h-screen">
+      <main className="min-h-screen bg-[#0a0a0f] text-white">
         {/* Hero */}
-        <section className="mx-auto max-w-7xl px-6 py-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <section className="mx-auto max-w-7xl px-6 py-20 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
-            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-white">
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
               Understand books in few minutes
             </h1>
-            <p className="mt-4 text-lg text-neutral-300">
+            <p className="mt-6 text-lg text-neutral-300 max-w-xl">
               Gain more knowledge in less time. Great summaries for busy people,
               individuals who barely have time to read, and even people who don’t
               like to read.
             </p>
-            <div className="mt-8">
+            <div className="mt-10">
               <a
                 href="/login"
-                className="inline-flex items-center justify-center rounded-md bg-white/10 px-5 py-3 text-white font-medium ring-1 ring-white/20 hover:bg-white/20"
+                className="inline-flex items-center justify-center rounded-md bg-white/10 px-6 py-3 text-white font-medium ring-1 ring-white/20 hover:bg-white/20"
               >
                 Login
               </a>
@@ -84,43 +84,43 @@ export default function HomePage() {
           </div>
           <div className="relative">
             <Image
-              src="/landing.png"
-              alt="Reading illustration"
+              src="/images/placeholder-hero.jpg"
+              alt="Reading illustration placeholder"
               width={600}
               height={400}
-              className="w-full h-auto rounded-lg ring-1 ring-white/10"
+              className="w-full h-auto rounded-lg shadow-lg ring-1 ring-white/10 object-cover"
               priority
             />
           </div>
         </section>
 
         {/* Value props */}
-        <section className="mx-auto max-w-7xl px-6 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <article className="rounded-lg border border-white/10 bg-neutral-900 p-6">
-              <h3 className="text-lg font-semibold text-white">Read or listen</h3>
-              <p className="mt-2 text-neutral-300">
-                Save time by getting the core ideas from the best books.
-              </p>
+        <section className="mx-auto max-w-7xl px-6 py-20 grid md:grid-cols-3 gap-12">
+          {[
+            { title: "Read or listen", text: "Save time by getting the core ideas from the best books." },
+            { title: "Find your next read", text: "Explore book lists and personalized recommendations." },
+            { title: "Briefcasts", text: "Gain valuable insights from briefcasts." },
+          ].map((item) => (
+            <article
+              key={item.title}
+              className="rounded-lg border border-white/10 bg-neutral-900 p-8"
+            >
+              <Image
+                src="/images/placeholder-feature.jpg"
+                alt={`${item.title} placeholder`}
+                width={400}
+                height={250}
+                className="w-full h-auto rounded-md mb-6 object-cover"
+              />
+              <h3 className="text-lg font-semibold">{item.title}</h3>
+              <p className="mt-2 text-neutral-300">{item.text}</p>
             </article>
-            <article className="rounded-lg border border-white/10 bg-neutral-900 p-6">
-              <h3 className="text-lg font-semibold text-white">Find your next read</h3>
-              <p className="mt-2 text-neutral-300">
-                Explore book lists and personalized recommendations.
-              </p>
-            </article>
-            <article className="rounded-lg border border-white/10 bg-neutral-900 p-6">
-              <h3 className="text-lg font-semibold text-white">Briefcasts</h3>
-              <p className="mt-2 text-neutral-300">
-                Gain valuable insights from briefcasts.
-              </p>
-            </article>
-          </div>
+          ))}
         </section>
 
         {/* Outcomes grid */}
-        <section className="mx-auto max-w-7xl px-6 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+        <section className="mx-auto max-w-7xl px-6 py-20">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-12">
             {[
               "Enhance your knowledge",
               "Achieve greater success",
@@ -131,102 +131,95 @@ export default function HomePage() {
             ].map((t) => (
               <div
                 key={t}
-                className="rounded-lg bg-neutral-900 border border-white/10 p-6"
+                className="rounded-lg bg-neutral-900 border border-white/10 p-8 text-center"
               >
-                <h3 className="text-base font-semibold text-white">{t}</h3>
+                <Image
+                  src="/images/placeholder-outcome.jpg"
+                  alt={`${t} placeholder`}
+                  width={300}
+                  height={200}
+                  className="w-full h-auto rounded-md mb-4 object-cover"
+                />
+                <h3 className="text-base font-semibold">{t}</h3>
               </div>
             ))}
           </div>
         </section>
 
         {/* Impact stats */}
-        <section className="mx-auto max-w-7xl px-6 py-12">
-          <ul className="space-y-4">
-            <li className="flex items-start gap-4">
-              <span className="text-2xl font-bold text-white">93%</span>
+        <section className="mx-auto max-w-7xl px-6 py-20">
+          <ul className="space-y-8">
+            <li className="flex items-start gap-6">
+              <span className="text-3xl font-bold">93%</span>
               <p className="text-neutral-300">
-                of Summarist members <strong className="text-white">significantly increase </strong>
-                reading frequency.
+                of Summarist members <strong>significantly increase</strong> reading frequency.
               </p>
             </li>
-            <li className="flex items-start gap-4">
-              <span className="text-2xl font-bold text-white">96%</span>
+            <li className="flex items-start gap-6">
+              <span className="text-3xl font-bold">96%</span>
               <p className="text-neutral-300">
-                of Summarist members <strong className="text-white">establish better </strong>
-                habits.
+                of Summarist members <strong>establish better</strong> habits.
               </p>
             </li>
-            <li className="flex items-start gap-4">
-              <span className="text-2xl font-bold text-white">90%</span>
+            <li className="flex items-start gap-6">
+              <span className="text-3xl font-bold">90%</span>
               <p className="text-neutral-300">
-                have made <strong className="text-white">significant positive </strong>
-                change to their lives.
+                have made <strong>significant positive</strong> change to their lives.
               </p>
             </li>
-            <li className="flex items-start gap-4">
-              <span className="text-2xl font-bold text-white">91%</span>
+            <li className="flex items-start gap-6">
+              <span className="text-3xl font-bold">91%</span>
               <p className="text-neutral-300">
-                of Summarist members <strong className="text-white">report feeling more productive </strong>
-                after incorporating the service into their daily routine.
+                of Summarist members <strong>feel more productive</strong> after incorporating the service.
               </p>
             </li>
-            <li className="flex items-start gap-4">
-              <span className="text-2xl font-bold text-white">94%</span>
+            <li className="flex items-start gap-6">
+              <span className="text-3xl font-bold">94%</span>
               <p className="text-neutral-300">
-                of Summarist members have <strong className="text-white">noticed an improvement </strong>
-                in their overall comprehension and retention of information.
+                have <strong>improved comprehension and retention</strong> of information.
               </p>
             </li>
-            <li className="flex items-start gap-4">
-              <span className="text-2xl font-bold text-white">88%</span>
+            <li className="flex items-start gap-6">
+              <span className="text-3xl font-bold">88%</span>
               <p className="text-neutral-300">
-                of Summarist members <strong className="text-white">feel more informed </strong>
-                about current events and industry trends since using the platform.
+                feel more informed about current events and industry trends.
               </p>
             </li>
           </ul>
         </section>
 
         {/* Testimonials */}
-        <section className="mx-auto max-w-7xl px-6 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <figure className="rounded-lg border border-white/10 bg-neutral-900 p-6">
-              <blockquote className="text-neutral-200">
-                This app has been a <strong className="text-white">game-changer </strong>
-                for me! It’s saved me so much time...
-              </blockquote>
-              <figcaption className="mt-4 text-sm text-neutral-400">Hanna M.</figcaption>
-            </figure>
-            <figure className="rounded-lg border border-white/10 bg-neutral-900 p-6">
-              <blockquote className="text-neutral-200">
-                I love this app! It provides <strong className="text-white">concise and accurate summaries </strong>
-                in a way that is easy to understand.
-              </blockquote>
-              <figcaption className="mt-4 text-sm text-neutral-400">David B.</figcaption>
-            </figure>
-            <figure className="rounded-lg border border-white/10 bg-neutral-900 p-6">
-              <blockquote className="text-neutral-200">
-                This app is a great way to get the main takeaways... <strong className="text-white">The summaries are well-written and informative. </strong>
-                Definitely worth downloading.
-              </blockquote>
-              <figcaption className="mt-4 text-sm text-neutral-400">Nathan S.</figcaption>
-            </figure>
-            <figure className="rounded-lg border border-white/10 bg-neutral-900 p-6">
-              <blockquote className="text-neutral-200">
-                If you’re a busy person who <strong className="text-white">loves reading but doesn’t have the time </strong>
-                to read every book in full, this app is for you!
-              </blockquote>
-              <figcaption className="mt-4 text-sm text-neutral-400">Ryan R.</figcaption>
-            </figure>
+        <section className="mx-auto max-w-7xl px-6 py-20">
+          <h2 className="text-3xl font-semibold text-center mb-12">What our members say</h2>
+          <div className="grid md:grid-cols-2 gap-12">
+            {[
+              { name: "Hanna M.", text: "This app has been a game-changer for me! It’s saved me so much time..." },
+              { name: "David B.", text: "I love this app! It provides concise and accurate summaries in a way that is easy to understand." },
+              { name: "Nathan S.", text: "This app is a great way to get the main takeaways... The summaries are well-written and informative." },
+              { name: "Ryan R.", text: "If you’re a busy person who loves reading but doesn’t have the time to read every book in full, this app is for you!" },
+            ].map(({ name, text }) => (
+              <figure
+                key={name}
+                className="rounded-lg border border-white/10 bg-neutral-900 p-8 flex gap-6 items-start"
+              >
+                <Image
+                  src="/images/placeholder-testimonial.jpg"
+                  alt={`${name} placeholder`}
+                  width={80}
+                  height={80}
+                  className="rounded-full object-cover"
+                />
+                <blockquote className="text-neutral-200">{text}</blockquote>
+                <figcaption className="sr-only">{name}</figcaption>
+              </figure>
+            ))}
           </div>
         </section>
 
         {/* CTA band */}
-        <section className="mx-auto max-w-7xl px-6 py-16 text-center bg-neutral-900 rounded-xl border border-white/10">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">
-            Start growing with Summarist now
-          </h2>
-          <div className="mt-6 flex flex-col sm:flex-row gap-6 justify-center">
+        <section className="mx-auto max-w-7xl px-6 py-20 text-center bg-neutral-900 rounded-xl border border-white/10">
+          <h2 className="text-2xl sm:text-3xl font-bold">Start growing with Summarist now</h2>
+          <div className="mt-8 flex flex-col sm:flex-row gap-8 justify-center">
             <div className="text-neutral-200">
               3 Million <span className="text-neutral-400">Downloads on all platforms</span>
             </div>
@@ -234,25 +227,34 @@ export default function HomePage() {
               4.5 Stars <span className="text-neutral-400">Average ratings on iOS and Google Play</span>
             </div>
             <div className="text-neutral-200">
-              97% <span className="text-neutral-400">Of Summarist members create a better reading habit</span>
+              97% <span className="text-neutral-400">Of members create a better reading habit</span>
             </div>
           </div>
         </section>
 
         {/* Featured Book */}
-        <section className="mx-auto max-w-7xl px-6 py-12">
-          <h2 className="text-xl font-semibold flex items-center gap-2 text-white">
+        <section className="mx-auto max-w-7xl px-6 py-20">
+          <h2 className="text-xl font-semibold flex items-center gap-2">
             <BookOpenIcon className="h-5 w-5 flex-shrink-0 text-indigo-400" />
             Featured Book
           </h2>
           {loading && <p className="text-neutral-400 mt-2">Loading featured book...</p>}
           {!loading && featured ? (
-            <article className="bg-neutral-900 border border-white/10 p-6 rounded-lg mt-4">
-              <h3 className="text-lg text-white">{featured.title}</h3>
-              <p className="text-neutral-400">by {featured.author}</p>
-              {featured.summary && (
-                <p className="text-neutral-300 text-sm mt-2">{featured.summary}</p>
-              )}
+            <article className="bg-neutral-900 border border-white/10 p-8 rounded-lg mt-6 grid md:grid-cols-2 gap-12 items-center">
+              <Image
+                src="/images/placeholder-book.jpg"
+                alt="Featured book placeholder"
+                width={300}
+                height={400}
+                className="rounded-lg shadow-lg object-cover"
+              />
+              <div>
+                <h3 className="text-lg text-white">{featured.title}</h3>
+                <p className="text-neutral-400">by {featured.author}</p>
+                {featured.summary && (
+                  <p className="text-neutral-300 text-sm mt-4">{featured.summary}</p>
+                )}
+              </div>
             </article>
           ) : (
             !loading && <p className="text-neutral-400 mt-2">No featured book found.</p>
@@ -260,24 +262,33 @@ export default function HomePage() {
         </section>
 
         {/* Top Picks */}
-        <section className="mx-auto max-w-7xl px-6 py-12">
-          <h2 className="text-xl font-semibold flex items-center gap-2 text-white">
+        <section className="mx-auto max-w-7xl px-6 py-20">
+          <h2 className="text-xl font-semibold flex items-center gap-2">
             <SparklesIcon className="h-5 w-5 flex-shrink-0 text-pink-400" />
             Top Picks
           </h2>
           {loading && <p className="text-neutral-400 mt-2">Loading top picks...</p>}
           {!loading && topPicks.length > 0 ? (
-            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mt-6">
               {topPicks.map((book) => (
                 <li
                   key={book.id}
-                  className="bg-neutral-900 border border-white/10 p-6 rounded-lg"
+                  className="bg-neutral-900 border border-white/10 p-8 rounded-lg flex flex-col gap-4"
                 >
-                  <h3 className="text-lg text-white">{book.title}</h3>
-                  <p className="text-neutral-400">by {book.author}</p>
-                  {book.summary && (
-                    <p className="text-neutral-300 text-sm mt-2">{book.summary}</p>
-                  )}
+                  <Image
+                    src="/images/placeholder-book.jpg"
+                    alt={`${book.title} placeholder`}
+                    width={200}
+                    height={280}
+                    className="rounded-md shadow-md object-cover mx-auto"
+                  />
+                  <div>
+                    <h3 className="text-lg text-white">{book.title}</h3>
+                    <p className="text-neutral-400">by {book.author}</p>
+                    {book.summary && (
+                      <p className="text-neutral-300 text-sm mt-2">{book.summary}</p>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>
@@ -287,12 +298,21 @@ export default function HomePage() {
         </section>
 
         {/* Continue Listening */}
-        <section className="mx-auto max-w-7xl px-6 py-12">
-          <h2 className="text-xl font-semibold flex items-center gap-2 text-white">
+        <section className="mx-auto max-w-7xl px-6 py-20">
+          <h2 className="text-xl font-semibold flex items-center gap-2">
             <PlayCircleIcon className="h-5 w-5 flex-shrink-0 text-green-400" />
             Continue Listening
           </h2>
-          <p className="text-neutral-400 mt-2">No books in progress</p>
+          <div className="mt-6 bg-neutral-900 border border-white/10 rounded-lg p-8 flex flex-col items-center justify-center">
+            <Image
+              src="/images/placeholder-listening.jpg"
+              alt="Continue listening placeholder"
+              width={400}
+              height={250}
+              className="rounded-md shadow-md object-cover mb-6"
+            />
+            <p className="text-neutral-400">No books in progress</p>
+          </div>
         </section>
       </main>
     </ProtectedRoute>
