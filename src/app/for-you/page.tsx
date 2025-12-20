@@ -60,7 +60,7 @@ export default function ForYouPage() {
           const books = (await Promise.all(bookPromises)).filter(Boolean) as (Book & { reason: string })[];
           if (isActive) setRecommendedBooks(books);
         } else {
-          if (isActive) setError("Document is Present.");
+          if (isActive) setError("BOOKS ARE AVAILABLE.");
         }
       } catch (err) {
         console.error("Error fetching recommendations:", err);
