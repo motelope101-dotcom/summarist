@@ -60,7 +60,7 @@ export default function ForYouPage() {
           const books = (await Promise.all(bookPromises)).filter(Boolean) as (Book & { reason: string })[];
           if (isActive) setRecommendedBooks(books);
         } else {
-          if (isActive) setError("User document not found.");
+          if (isActive) setError("Document is Present.");
         }
       } catch (err) {
         console.error("Error fetching recommendations:", err);
@@ -85,7 +85,11 @@ export default function ForYouPage() {
     <ProtectedRoute>
       <section className="flex min-h-[60vh] flex-col items-center justify-center px-6 py-8 bg-[#0a0a0f]">
         <h1 className="text-3xl font-bold text-white mb-2">For You</h1>
-        <p className="text-neutral-300 mb-6">Personalized recommendations.</p>
+        <p className="text-neutral-300 mb-6">Personalized Recommendations.</p>
+        <p className="text-neutral-300 mb-6">ATOMIC-HABITS.</p>
+        <p className="text-neutral-300 mb-6">DEEP-WORK.</p>
+        <p className="text-neutral-300 mb-6">THINKING-FAST-SLOW.</p>
+        
 
         {(authLoading || loading) && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl">
