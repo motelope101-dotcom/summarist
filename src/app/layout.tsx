@@ -22,7 +22,6 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
 
-      {/* BODY */}
       <body className="bg-[#0a0a0f] text-white min-h-screen flex flex-col">
         <AuthProvider>
 
@@ -37,7 +36,7 @@ export default function RootLayout({
 
             {/* Centered page content */}
             <main className="flex-1 px-6 py-4 flex justify-center">
-              <div className="w-full">
+              <div className="w-full max-w-6xl">
                 {children}
               </div>
             </main>
