@@ -31,11 +31,11 @@ export default function RootLayout({
           {/* Main content row: Sidebar + Centered Page Content */}
           <div className="flex flex-1">
 
-            {/* Sidebar stays fixed on the left */}
+            {/* Sidebar */}
             <Sidebar />
 
-            {/* Centered page content */}
-            <main className="flex-1 px-6 py-4 flex justify-center">
+            {/* Centered page content with sidebar compensation */}
+            <main className="flex-1 px-6 py-4 flex justify-center pl-20 md:pl-64">
               <div className="w-full max-w-6xl">
                 {children}
               </div>
