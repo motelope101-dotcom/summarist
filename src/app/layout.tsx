@@ -25,25 +25,19 @@ export default function RootLayout({
       <body className="bg-[#0a0a0f] text-white min-h-screen flex flex-col">
         <AuthProvider>
 
-          {/* Global Header */}
           <Header />
 
-          {/* Main content row: Sidebar + Centered Page Content */}
           <div className="flex flex-1">
-
-            {/* Sidebar */}
+            {/* Sidebar will be null on '/' */}
             <Sidebar />
 
-            {/* Centered page content with sidebar compensation */}
-            <main className="flex-1 px-6 py-4 flex justify-center pl-20 md:pl-64">
-              <div className="w-full max-w-6xl">
+            <main className="flex-1 px-6 py-4">
+              <div className="w-full max-w-6xl mx-auto">
                 {children}
               </div>
             </main>
-
           </div>
 
-          {/* Global Footer */}
           <Footer />
 
         </AuthProvider>

@@ -18,6 +18,11 @@ export default function Sidebar() {
   const router = useRouter();
   const { user, logout } = useAuth();
 
+  // No sidebar on the homepage
+  if (pathname === "/") {
+    return null;
+  }
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -54,7 +59,6 @@ export default function Sidebar() {
         </Link>
       ))}
 
-      {/* Logout */}
       {user && (
         <button
           onClick={handleLogout}
