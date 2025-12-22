@@ -21,19 +21,32 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" />
       </head>
+
+      {/* BODY */}
       <body className="bg-[#0a0a0f] text-white min-h-screen flex flex-col">
         <AuthProvider>
+
           {/* Global Header */}
           <Header />
 
-          {/* Main content row with Sidebar + page content */}
+          {/* Main content row: Sidebar + Centered Page Content */}
           <div className="flex flex-1">
+
+            {/* Sidebar stays fixed on the left */}
             <Sidebar />
-            <main className="flex-1 px-6 py-4">{children}</main>
+
+            {/* Centered page content */}
+            <main className="flex-1 px-6 py-4 flex justify-center">
+              <div className="w-full">
+                {children}
+              </div>
+            </main>
+
           </div>
 
           {/* Global Footer */}
           <Footer />
+
         </AuthProvider>
       </body>
     </html>
